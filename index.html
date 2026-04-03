@@ -136,6 +136,28 @@ select optgroup{background:#1e2130;color:#7a82a0}
 .toast{position:fixed;bottom:24px;right:24px;background:#3d4a8a;color:#c5ccf0;border-radius:10px;padding:12px 20px;font-size:14px;font-weight:500;display:none;border:0.5px solid #4d5ca0;z-index:999;max-width:320px}
 .toast.show{display:block}
 .loading{text-align:center;padding:3rem;color:#7a82a0;font-size:15px}
+.e{border-radius:4px;transition:background 0.12s;padding:1px 3px;margin:-1px -3px}
+.owner-mode .e{cursor:text;outline:none}
+.owner-mode .e:hover{background:rgba(107,125,214,0.12);box-shadow:0 0 0 1px rgba(107,125,214,0.3)}
+.owner-mode .e:focus{background:rgba(107,125,214,0.2);box-shadow:0 0 0 1.5px #6b7dd6;outline:none}
+.edit-hint{position:fixed;bottom:68px;right:24px;background:#252a3d;border:0.5px solid #534AB7;color:#9990c0;font-size:12px;padding:6px 12px;border-radius:8px;z-index:998;display:none;pointer-events:none}
+.owner-mode .edit-hint{display:block}
+.builds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem}
+.build-card{background:#252a3d;border:0.5px solid #3a3f58;border-radius:14px;overflow:hidden}
+.build-card img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;background:#1e2130}
+.build-card-body{padding:12px 14px}
+.build-card-title{font-size:15px;font-weight:500;color:#dde1f0;margin-bottom:4px}
+.build-card-desc{font-size:13px;color:#7a82a0}
+.build-card-actions{display:flex;gap:8px;margin-top:10px}
+.upload-area{background:#1e2130;border:1.5px dashed #3a3f58;border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:1.2rem}
+.upload-area:hover{border-color:#534AB7;background:#252a3d}
+.upload-area.drag{border-color:#534AB7;background:#2a2f44}
+.upload-icon{font-size:32px;margin-bottom:8px;color:#4a5070}
+.upload-text{font-size:14px;color:#7a82a0}
+.upload-subtext{font-size:12px;color:#4a5070;margin-top:4px}
+.upload-progress{background:#1e2130;border:0.5px solid #3a3f58;border-radius:8px;padding:12px 16px;margin-bottom:8px;display:none}
+.progress-bar-wrap{background:#3a3f58;border-radius:4px;height:6px;margin-top:8px;overflow:hidden}
+.progress-bar{height:100%;background:#534AB7;border-radius:4px;transition:width 0.2s;width:0%}
 @media(max-width:750px){.parties-wrap,.o-parties-wrap{grid-template-columns:1fr}.row2{grid-template-columns:1fr}.event-switcher{flex-direction:column}}
 </style>
 </head>
@@ -143,7 +165,7 @@ select optgroup{background:#1e2130;color:#7a82a0}
 <div class="wrap" id="app">
 
 <div class="topbar">
-  <div class="topbar-logo">⚔ Albion Events</div>
+  <div class="topbar-logo e" id="lbl-logo" spellcheck="false">⚔ Albion Events</div>
   <div class="db-status" id="db-status"><div class="db-dot" id="db-dot"></div><span id="db-label">connecting</span></div>
   <button class="secret-btn" onclick="toggleOwnerTab()" tabindex="-1">
     <svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="#7a82a0" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><line x1="6" y1="3.5" x2="6" y2="6"/><circle cx="6" cy="8.5" r="0.5" fill="#7a82a0"/></svg>
@@ -153,19 +175,22 @@ select optgroup{background:#1e2130;color:#7a82a0}
 <div class="event-switcher" id="event-switcher"><div class="loading">Loading events...</div></div>
 
 <div class="banner" id="main-banner" style="display:none">
-  <div class="banner-title" id="ev-title">Event Signup</div>
-  <div class="banner-desc" id="ev-desc">Pick your weapons and sign up.</div>
+  <div class="banner-title e" id="ev-title" spellcheck="false">Event Signup</div>
+  <div class="banner-desc e" id="ev-desc" spellcheck="false">Pick your weapons and sign up.</div>
   <div class="stat-center">
-    <div class="stat"><div class="val" id="s-total">0</div><div class="lbl">signed up</div></div>
+    <div class="stat"><div class="val" id="s-total">0</div><div class="lbl e" id="lbl-signed-up" spellcheck="false">signed up</div></div>
   </div>
 </div>
+
+<div class="edit-hint">✏ Click any text to edit it</div>
 
 <div class="toast" id="toast"></div>
 
 <div id="event-content" style="display:none">
   <div class="tabs">
-    <div class="tab active" onclick="nav('signup')" id="tab-signup">Sign up</div>
-    <div class="tab" onclick="nav('parties')" id="tab-parties">Parties</div>
+    <div class="tab active" onclick="nav('signup')" id="tab-signup"><span class="e" spellcheck="false" onclick="event.stopPropagation()">Sign up</span></div>
+    <div class="tab" onclick="nav('parties')" id="tab-parties"><span class="e" spellcheck="false" onclick="event.stopPropagation()">Parties</span></div>
+    <div class="tab" onclick="nav('builds')" id="tab-builds"><span class="e" spellcheck="false" onclick="event.stopPropagation()">Builds</span></div>
     <div class="tab" id="owner-tab" style="display:none" onclick="nav('owner')">&#9881;</div>
   </div>
 
@@ -174,29 +199,34 @@ select optgroup{background:#1e2130;color:#7a82a0}
     <div id="loadout-bar"></div>
     <div id="signup-form-wrap">
       <div class="card">
-        <div class="section-lbl" style="margin-bottom:1.2rem">Join the event</div>
+        <div class="section-lbl e" id="lbl-join" spellcheck="false" style="margin-bottom:1.2rem">Join the event</div>
         <div class="row2">
-          <div><label>Character name</label><input id="i-name" placeholder="Your in-game name..." onkeydown="if(event.key==='Enter')doSignup()"></div>
-          <div><label>Primary weapon</label><select id="i-w1"><option value="">— choose weapon —</option></select></div>
+          <div><label class="e" id="lbl-f1" spellcheck="false">Character name</label><input id="i-name" placeholder="Your in-game name..." onkeydown="if(event.key==='Enter')doSignup()"></div>
+          <div><label class="e" id="lbl-f2" spellcheck="false">Primary weapon</label><select id="i-w1"><option value="">— choose weapon —</option></select></div>
         </div>
         <div class="row2" style="margin-bottom:18px">
-          <div><label>Secondary weapon <span style="font-weight:400;font-size:12px;color:#4a5070">(optional)</span></label><select id="i-w2"><option value="">— flexible / none —</option></select></div>
-          <div><label>Note <span style="font-weight:400;font-size:12px;color:#4a5070">(optional)</span></label><input id="i-note" placeholder="e.g. can swap to healer"></div>
+          <div><label class="e" id="lbl-f3" spellcheck="false">Secondary weapon <span style="font-weight:400;font-size:12px;color:#4a5070">(optional)</span></label><select id="i-w2"><option value="">— flexible / none —</option></select></div>
+          <div><label class="e" id="lbl-f4" spellcheck="false">Note <span style="font-weight:400;font-size:12px;color:#4a5070">(optional)</span></label><input id="i-note" placeholder="e.g. can swap to healer"></div>
         </div>
         <button class="btn btn-accent" onclick="doSignup()" style="font-size:16px;padding:13px 32px">Sign me up</button>
         <button class="btn" onclick="saveLoadout()" style="font-size:14px;padding:13px 20px;margin-left:8px">Save as my loadout</button>
       </div>
     </div>
     <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-top:1.6rem">
-      <div class="section-lbl" style="margin:0">Signed up</div>
+      <div class="section-lbl e" id="lbl-signedup" spellcheck="false" style="margin:0">Signed up</div>
       <span id="total-badge" style="font-size:14px;color:#7a82a0">0 players</span>
     </div>
     <div id="signup-list"><div class="loading">Loading...</div></div>
   </div>
 
   <div id="v-parties" class="view">
-    <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Party compositions set by the organiser.</div>
+    <div class="e" id="lbl-parties-desc" spellcheck="false" style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Party compositions set by the organiser.</div>
     <div class="parties-wrap" id="public-parties"></div>
+  </div>
+
+  <div id="v-builds" class="view">
+    <div class="e" id="lbl-builds-desc" spellcheck="false" style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Approved builds for this event. Click an image to view full size.</div>
+    <div id="builds-grid-public" class="builds-grid"><div class="loading">Loading builds...</div></div>
   </div>
 
   <div id="v-owner" class="view">
@@ -218,6 +248,7 @@ select optgroup{background:#1e2130;color:#7a82a0}
         <div class="owner-tab active" onclick="ownerNav('event')">Event settings</div>
         <div class="owner-tab" onclick="ownerNav('parties')">Parties</div>
         <div class="owner-tab" onclick="ownerNav('default')">Default party</div>
+        <div class="owner-tab" onclick="ownerNav('builds')">Builds</div>
         <div class="owner-tab" onclick="ownerNav('signups')">Signups</div>
         <div class="owner-tab" onclick="ownerNav('history')">History</div>
         <div class="owner-tab" onclick="ownerNav('weapons')">Weapon list</div>
@@ -258,6 +289,21 @@ select optgroup{background:#1e2130;color:#7a82a0}
           <button class="btn btn-danger btn-sm" onclick="clearDefault()">Clear default</button>
         </div>
         <div class="o-parties-wrap" id="default-parties"></div>
+      </div>
+
+      <div id="ov-builds" class="owner-view">
+        <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Upload build screenshots. Images are stored in Supabase Storage and visible to all players on the Builds tab.</div>
+        <div class="upload-area" id="upload-area" onclick="document.getElementById('build-file-input').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleBuildDrop(event)">
+          <div class="upload-icon">🖼</div>
+          <div class="upload-text">Click to upload or drag &amp; drop an image</div>
+          <div class="upload-subtext">PNG, JPG, WEBP — max 5MB per image</div>
+          <input type="file" id="build-file-input" accept="image/*" style="display:none" onchange="handleBuildUpload(this.files[0])">
+        </div>
+        <div class="upload-progress" id="upload-progress">
+          <div style="font-size:13px;color:#dde1f0" id="upload-progress-text">Uploading...</div>
+          <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
+        </div>
+        <div id="builds-grid-owner" class="builds-grid"></div>
       </div>
 
       <div id="ov-signups" class="owner-view">
@@ -320,6 +366,54 @@ let activeEventId=null;
 let eventData={};
 let history=[];
 let unlocked=false,ownerVisible=false,collapsedCats={},metaSaveTimer=null;
+
+// ── Editable text ─────────────────────────────────────────────────
+const EDITABLE_IDS = ['lbl-logo','ev-title','ev-desc','lbl-signed-up','lbl-join','lbl-f1','lbl-f2','lbl-f3','lbl-f4','lbl-signedup','lbl-parties-desc'];
+
+function setEditable(on){
+  document.getElementById('app').classList.toggle('owner-mode', on);
+  EDITABLE_IDS.forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.contentEditable=on?'true':'false';
+    el.style.pointerEvents=on?'auto':'none';
+    el.style.userSelect=on?'text':'none';
+    if(on){
+      el.onblur=()=>persistEditableText();
+      el.onkeydown=(e)=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();el.blur();}};
+    }
+  });
+  // tab label spans
+  document.querySelectorAll('.tabs .e').forEach(el=>{
+    el.contentEditable=on?'true':'false';
+    el.style.pointerEvents=on?'auto':'none';
+    if(on) el.onblur=()=>persistEditableText();
+  });
+}
+
+function persistEditableText(){
+  // Save all editable labels into the event meta so they persist
+  const ev=getActiveEvent();if(!ev)return;
+  if(!ev.labels) ev.labels={};
+  EDITABLE_IDS.forEach(id=>{
+    const el=document.getElementById(id);if(el)ev.labels[id]=el.textContent;
+  });
+  // tab labels
+  const t1=document.querySelector('#tab-signup .e');const t2=document.querySelector('#tab-parties .e');
+  if(t1)ev.labels['tab-signup']=t1.textContent;
+  if(t2)ev.labels['tab-parties']=t2.textContent;
+  clearTimeout(metaSaveTimer);
+  metaSaveTimer=setTimeout(saveActiveEvent,800);
+}
+
+function applyEditableLabels(){
+  const ev=getActiveEvent();if(!ev||!ev.labels)return;
+  Object.entries(ev.labels).forEach(([id,text])=>{
+    if(!text)return;
+    if(id==='tab-signup'){const el=document.querySelector('#tab-signup .e');if(el)el.textContent=text;return;}
+    if(id==='tab-parties'){const el=document.querySelector('#tab-parties .e');if(el)el.textContent=text;return;}
+    const el=document.getElementById(id);if(el)el.textContent=text;
+  });
+}
 
 // ── Fingerprint ───────────────────────────────────────────────────
 const FP_KEY='albion_fp';
@@ -454,7 +548,7 @@ function nav(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove
 function ownerNav(v){
   document.querySelectorAll('.owner-view').forEach(e=>e.classList.remove('on'));document.querySelectorAll('.owner-tab').forEach(e=>e.classList.remove('active'));
   document.getElementById('ov-'+v).classList.add('on');document.querySelectorAll('.owner-tab').forEach(t=>{if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+v+"'"))t.classList.add('active');});
-  if(v==='weapons')renderWeaponEditor();if(v==='history')renderHistory();if(v==='default')renderDefaultParties();if(v==='signups'){renderOwnerSignups();renderBlockedList();}if(v==='manage-events')renderManageEvents();
+  if(v==='weapons')renderWeaponEditor();if(v==='history')renderHistory();if(v==='default')renderDefaultParties();if(v==='signups'){renderOwnerSignups();renderBlockedList();}if(v==='manage-events')renderManageEvents();if(v==='builds')renderOwnerBuilds();
 }
 
 // ── Signup ────────────────────────────────────────────────────────
@@ -514,6 +608,7 @@ function applyMeta(){
   document.getElementById('ev-title').textContent=meta.title||'Event Signup';
   document.getElementById('ev-desc').textContent=meta.desc||'Pick your weapons and sign up.';
   if(unlocked){const label=meta.name||eventList.find(e=>e.id===activeEventId)?.name||'';document.getElementById('owner-event-label').textContent=label;document.getElementById('ov-event-name-label').textContent=label;}
+  applyEditableLabels();
 }
 function syncOwnerInputs(){const ev=getActiveEvent();if(!ev)return;const meta=ev.meta||{};document.getElementById('o-event-name').value=meta.name||'';document.getElementById('o-event-date').value=meta.date||'';document.getElementById('o-ev-title').value=meta.title||'';document.getElementById('o-ev-desc').value=meta.desc||'';}
 
@@ -572,12 +667,12 @@ function unlock(){
   if(document.getElementById('pw-inp').value!==OWNER_PASSWORD){toast('Wrong password');return;}
   unlocked=true;document.getElementById('lock-screen').style.display='none';document.getElementById('owner-content').style.display='block';document.getElementById('pw-inp').value='';
   syncOwnerInputs();const ev=getActiveEvent();const label=ev?.meta?.name||eventList.find(e=>e.id===activeEventId)?.name||'';document.getElementById('owner-event-label').textContent=label;
-  updateSignupUI();renderAll();renderEventSwitcher();
+  setEditable(true);updateSignupUI();renderAll();renderEventSwitcher();
 }
-function lockOwner(){unlocked=false;document.getElementById('lock-screen').style.display='block';document.getElementById('owner-content').style.display='none';ownerVisible=false;document.getElementById('owner-tab').style.display='none';updateSignupUI();nav('signup');renderEventSwitcher();}
+function lockOwner(){unlocked=false;document.getElementById('lock-screen').style.display='block';document.getElementById('owner-content').style.display='none';ownerVisible=false;document.getElementById('owner-tab').style.display='none';setEditable(false);updateSignupUI();nav('signup');renderEventSwitcher();}
 
 // ── Render ────────────────────────────────────────────────────────
-function renderAll(){const ev=getActiveEvent();if(!ev)return;updateStats();renderSignupList();renderPublicParties();if(unlocked){renderOwnerSignups();renderOwnerParties();}}
+function renderAll(){const ev=getActiveEvent();if(!ev)return;updateStats();renderSignupList();renderPublicParties();renderPublicBuilds();if(unlocked){renderOwnerSignups();renderOwnerParties();}}
 function updateStats(){const ev=getActiveEvent();const c=ev?ev.signups.length:0;document.getElementById('s-total').textContent=c;document.getElementById('total-badge').textContent=c+' player'+(c!==1?'s':'');}
 function renderSignupList(){const ev=getActiveEvent();document.getElementById('signup-list').innerHTML=ev&&ev.signups.length?ev.signups.map((s,i)=>rowHtml(s,i,false)).join(''):`<div class="empty-msg">No signups yet — be the first!</div>`;}
 function renderOwnerSignups(){const ev=getActiveEvent();document.getElementById('o-signup-list').innerHTML=ev&&ev.signups.length?ev.signups.map((s,i)=>rowHtml(s,i,true)).join(''):`<div class="empty-msg">No signups yet.</div>`;}
@@ -626,6 +721,80 @@ async function deleteCategory(cat){if(!confirm(`Delete "${cat}"?`))return;delete
 function toggleCat(cat){collapsedCats[cat]=!collapsedCats[cat];renderWeaponEditor();}
 async function renameCategory(cat){const n=prompt('Rename:',cat);if(!n||n===cat)return;if(WEAPONS[n]){toast('Name taken');return;}const e=Object.entries(WEAPONS);WEAPONS={};e.forEach(([k,v])=>{WEAPONS[k===cat?n:k]=v;});rebuildSelects();renderWeaponEditor();await saveWeapons();}
 function renderWeaponEditor(){document.getElementById('weapon-editor').innerHTML=Object.entries(WEAPONS).map(([cat,weps])=>{const collapsed=collapsedCats[cat];const sid='winp-'+cat.replace(/[^a-zA-Z0-9]/g,'_');return `<div class="cat-block"><div class="cat-hdr" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')"><div class="cat-hdr-left"><span style="font-size:14px;font-weight:500;color:#dde1f0">${cat}</span><span style="font-size:12px;color:#7a82a0">${weps.length}</span></div><div style="display:flex;align-items:center;gap:8px"><button class="btn btn-sm" onclick="event.stopPropagation();renameCategory('${cat.replace(/'/g,"\\'")}')">rename</button><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCategory('${cat.replace(/'/g,"\\'")}')">delete</button><span class="chevron ${collapsed?'':'open'}">▼</span></div></div>${collapsed?'':`<div class="cat-body"><div class="weapon-tags">${weps.map(w=>`<span class="wtag">${w}<button class="wtag-del" onclick="removeWeapon('${cat.replace(/'/g,"\\'")}','${w.replace(/'/g,"\\'")}')">×</button></span>`).join('')}${!weps.length?`<span style="font-size:13px;color:#4a5070;font-style:italic">No weapons yet</span>`:''}</div><div class="add-weapon-row"><input id="${sid}" placeholder="Add weapon..." onkeydown="if(event.key==='Enter')addWeapon('${cat.replace(/'/g,"\\'")}')"><button class="btn btn-accent btn-sm" onclick="addWeapon('${cat.replace(/'/g,"\\'")}')">+ Add</button></div></div>`}</div>`;}).join('');}
+
+// ── Builds ────────────────────────────────────────────────────────
+async function handleBuildDrop(e){
+  e.preventDefault();document.getElementById('upload-area').classList.remove('drag');
+  const file=e.dataTransfer.files[0];if(file&&file.type.startsWith('image/'))await handleBuildUpload(file);
+}
+
+async function handleBuildUpload(file){
+  if(!file)return;
+  if(file.size>5*1024*1024){toast('Image too large — max 5MB.');return;}
+  const title=prompt('Build title (e.g. "Hallowfall Healer"):','');
+  if(title===null)return;
+
+  const prog=document.getElementById('upload-progress');
+  const bar=document.getElementById('progress-bar');
+  const txt=document.getElementById('upload-progress-text');
+  prog.style.display='block';bar.style.width='10%';txt.textContent='Uploading image...';
+
+  try{
+    const ext=file.name.split('.').pop();
+    const path=`builds/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+    const{error:upErr}=await db.storage.from('albion-builds').upload(path,file,{contentType:file.type});
+    if(upErr)throw upErr;
+    bar.style.width='70%';txt.textContent='Saving build info...';
+    const{data:urlData}=db.storage.from('albion-builds').getPublicUrl(path);
+    const ev=getActiveEvent();if(!ev)return;
+    if(!ev.builds)ev.builds=[];
+    ev.builds.push({id:Date.now(),title:title||'Untitled build',url:urlData.publicUrl,path,uploadedAt:new Date().toLocaleDateString('en-GB')});
+    bar.style.width='90%';
+    await saveActiveEvent();
+    bar.style.width='100%';txt.textContent='Done!';
+    setTimeout(()=>{prog.style.display='none';bar.style.width='0%';},1200);
+    renderOwnerBuilds();renderPublicBuilds();
+    toast(`"${title||'Build'}" uploaded!`);
+  }catch(err){
+    prog.style.display='none';bar.style.width='0%';
+    console.error(err);
+    toast('Upload failed. Check that the storage bucket exists (see setup.sql).');
+  }
+}
+
+async function deleteBuild(buildId){
+  if(!confirm('Delete this build image?'))return;
+  const ev=getActiveEvent();if(!ev||!ev.builds)return;
+  const build=ev.builds.find(b=>b.id===buildId);
+  if(build?.path){
+    await db.storage.from('albion-builds').remove([build.path]);
+  }
+  ev.builds=ev.builds.filter(b=>b.id!==buildId);
+  await saveActiveEvent();renderOwnerBuilds();renderPublicBuilds();toast('Build deleted.');
+}
+
+function buildCardHtml(b,ownerMode){
+  return `<div class="build-card">
+    <a href="${b.url}" target="_blank" rel="noopener"><img src="${b.url}" alt="${b.title}" loading="lazy" onerror="this.style.background='#1e2130';this.style.height='140px'"></a>
+    <div class="build-card-body">
+      <div class="build-card-title">${b.title}</div>
+      <div class="build-card-desc">${b.uploadedAt||''}</div>
+      ${ownerMode?`<div class="build-card-actions"><button class="btn btn-danger btn-sm" onclick="deleteBuild(${b.id})">Delete</button></div>`:''}
+    </div>
+  </div>`;
+}
+
+function renderPublicBuilds(){
+  const el=document.getElementById('builds-grid-public');if(!el)return;
+  const ev=getActiveEvent();const builds=ev?.builds||[];
+  el.innerHTML=builds.length?builds.map(b=>buildCardHtml(b,false)).join(''):`<div class="empty-msg">No builds posted yet.</div>`;
+}
+
+function renderOwnerBuilds(){
+  const el=document.getElementById('builds-grid-owner');if(!el)return;
+  const ev=getActiveEvent();const builds=ev?.builds||[];
+  el.innerHTML=builds.length?builds.map(b=>buildCardHtml(b,true)).join(''):`<div class="empty-msg" style="padding:1.5rem">No builds uploaded yet.</div>`;
+}
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
