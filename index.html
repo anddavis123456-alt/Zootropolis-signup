@@ -9,22 +9,35 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:system-ui,sans-serif;background:#1e2130;min-height:100vh}
 .wrap{padding:1.5rem;max-width:1100px;margin:0 auto}
-.topbar{display:flex;align-items:center;gap:14px;margin-bottom:1.4rem}
-.topbar-logo{font-size:13px;font-weight:500;color:#7a82a0;white-space:nowrap}
-.topbar-event{flex:1;background:#252a3d;border-radius:10px;padding:10px 16px;border:0.5px solid #3a3f58;display:flex;align-items:center;gap:10px}
-.topbar-event-name{font-size:17px;font-weight:500;color:#dde1f0;flex:1}
-.topbar-event-date{font-size:12px;color:#4a5070;white-space:nowrap}
+.topbar{display:flex;align-items:center;gap:12px;margin-bottom:1.4rem}
+.topbar-logo{font-size:15px;font-weight:500;color:#7a82a0;white-space:nowrap}
+.db-status{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 10px;border-radius:20px;border:0.5px solid #3a3f58;background:#1e2130;color:#7a82a0;margin-left:auto}
+.db-dot{width:7px;height:7px;border-radius:50%;background:#4a5070}
+.db-dot.ok{background:#70b890}
+.db-dot.err{background:#f0c0c0}
 .secret-btn{background:transparent;border:none;width:30px;height:30px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;opacity:0.2;border-radius:6px}
 .secret-btn:hover{opacity:0.5;background:#2e3450}
-.banner{background:#252a3d;border-radius:14px;padding:2rem;margin-bottom:1.5rem;border:0.5px solid #3a3f58}
-.banner-title{font-size:26px;font-weight:500;color:#dde1f0;margin-bottom:6px}
-.banner-desc{font-size:16px;color:#7a82a0;margin-bottom:1.4rem}
+.event-switcher{display:flex;gap:10px;margin-bottom:1.5rem;flex-wrap:wrap}
+.event-card{flex:1;min-width:180px;background:#252a3d;border:0.5px solid #3a3f58;border-radius:14px;padding:1.2rem 1.4rem;cursor:pointer;transition:all 0.15s;position:relative;border-top:3px solid #3a3f58}
+.event-card:hover{background:#2a2f42}
+.event-card.active{border-width:2px;background:#2a2f44}
+.event-card-time{font-size:20px;font-weight:500;color:#dde1f0;margin-bottom:3px}
+.event-card-date{font-size:13px;color:#7a82a0;margin-bottom:8px}
+.event-card-count{font-size:13px;color:#8899ee;font-weight:500}
+.event-card-badge{position:absolute;top:10px;right:10px;background:#2e2460;color:#c5bcf6;border:0.5px solid #534AB7;border-radius:20px;font-size:11px;font-weight:500;padding:2px 8px}
+.add-event-card{flex:0 0 140px;background:#1e2130;border:0.5px dashed #3a3f58;border-radius:14px;padding:1.2rem;cursor:pointer;transition:all 0.15s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+.add-event-card:hover{border-color:#534AB7;background:#252a3d}
+.add-event-plus{font-size:28px;color:#4a5070;line-height:1}
+.add-event-label{font-size:12px;color:#4a5070}
+.banner{background:#252a3d;border-radius:14px;padding:1.8rem 2rem;margin-bottom:1.5rem;border:0.5px solid #3a3f58;border-top:3px solid #534AB7}
+.banner-title{font-size:24px;font-weight:500;color:#dde1f0;margin-bottom:4px}
+.banner-desc{font-size:15px;color:#7a82a0;margin-bottom:1.2rem}
 .stat-center{display:flex;justify-content:center}
-.stat{background:#1e2130;border-radius:10px;padding:14px 48px;text-align:center;border:0.5px solid #3a3f58;display:inline-block}
-.stat .val{font-size:32px;font-weight:500;color:#dde1f0}
-.stat .lbl{font-size:14px;color:#7a82a0;margin-top:3px}
+.stat{background:#1e2130;border-radius:10px;padding:12px 44px;text-align:center;border:0.5px solid #3a3f58;display:inline-block}
+.stat .val{font-size:30px;font-weight:500;color:#dde1f0}
+.stat .lbl{font-size:13px;color:#7a82a0;margin-top:2px}
 .tabs{display:flex;gap:6px;margin-bottom:1.4rem}
-.tab{padding:12px 24px;font-size:15px;font-weight:500;cursor:pointer;color:#7a82a0;border-radius:10px;border:0.5px solid transparent;background:transparent;transition:all 0.15s}
+.tab{padding:11px 22px;font-size:15px;font-weight:500;cursor:pointer;color:#7a82a0;border-radius:10px;border:0.5px solid transparent;background:transparent;transition:all 0.15s}
 .tab.active{color:#dde1f0;background:#252a3d;border-color:#3a3f58}
 .tab:hover:not(.active){background:#252a3d66}
 .view{display:none}.view.on{display:block}
@@ -105,22 +118,25 @@ select optgroup{background:#1e2130;color:#7a82a0}
 .chevron.open{transform:rotate(180deg)}
 .section-lbl{font-size:16px;font-weight:500;color:#dde1f0;margin-bottom:10px}
 .empty-msg{text-align:center;padding:3rem;color:#4a5070;font-size:15px}
-.toast{position:fixed;bottom:24px;right:24px;background:#3d4a8a;color:#c5ccf0;border-radius:10px;padding:12px 20px;font-size:14px;font-weight:500;display:none;border:0.5px solid #4d5ca0;z-index:999}
-.toast.show{display:block}
-.divider{height:0.5px;background:#3a3f58;margin:1.2rem 0}
 .info-box{background:#1e2130;border:0.5px solid #3a3f58;border-radius:10px;padding:12px 16px;font-size:13px;color:#7a82a0;margin-bottom:1.2rem}
 .default-tag{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500;background:#2e2460;color:#c5bcf6;border:0.5px solid #534AB7;margin-left:6px;vertical-align:middle}
+.divider{height:0.5px;background:#3a3f58;margin:1.2rem 0}
 .signed-banner{background:#1e3830;border:0.5px solid #2a5a3a;border-radius:12px;padding:16px 20px;margin-bottom:1.2rem}
 .signed-banner-title{font-size:16px;font-weight:500;color:#70b890;margin-bottom:3px}
 .signed-banner-sub{font-size:13px;color:#4a7060}
 .ban-row{background:#252a3d;border:0.5px solid #7a3a3a;border-radius:8px;padding:10px 14px;margin-bottom:6px;display:flex;align-items:center;gap:10px;font-size:13px}
-.ban-name{color:#dde1f0;font-weight:500;flex:1}
+.loadout-bar{background:#1e2130;border:0.5px solid #3a3f58;border-radius:12px;padding:14px 18px;margin-bottom:1.2rem;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.loadout-bar-empty{color:#4a5070;font-size:14px;font-style:italic;flex:1}
+.loadout-info{flex:1}
+.loadout-info-name{font-size:15px;font-weight:500;color:#dde1f0}
+.loadout-info-weapons{font-size:13px;color:#7a82a0;margin-top:2px}
+.loadout-quick-btn{background:#3d4a8a;border:0.5px solid #4d5ca0;color:#c5ccf0;padding:10px 20px;border-radius:10px;font-size:15px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all 0.15s}
+.loadout-quick-btn:hover{background:#4d5ca0}
+.loadout-quick-btn:active{transform:scale(0.98)}
+.toast{position:fixed;bottom:24px;right:24px;background:#3d4a8a;color:#c5ccf0;border-radius:10px;padding:12px 20px;font-size:14px;font-weight:500;display:none;border:0.5px solid #4d5ca0;z-index:999;max-width:320px}
+.toast.show{display:block}
 .loading{text-align:center;padding:3rem;color:#7a82a0;font-size:15px}
-.db-status{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:4px 10px;border-radius:20px;border:0.5px solid #3a3f58;background:#1e2130;color:#7a82a0}
-.db-dot{width:7px;height:7px;border-radius:50%;background:#4a5070}
-.db-dot.ok{background:#70b890}
-.db-dot.err{background:#f0c0c0}
-@media(max-width:750px){.parties-wrap,.o-parties-wrap{grid-template-columns:1fr}.row2{grid-template-columns:1fr}}
+@media(max-width:750px){.parties-wrap,.o-parties-wrap{grid-template-columns:1fr}.row2{grid-template-columns:1fr}.event-switcher{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -128,281 +144,267 @@ select optgroup{background:#1e2130;color:#7a82a0}
 
 <div class="topbar">
   <div class="topbar-logo">⚔ Albion Events</div>
-  <div class="topbar-event">
-    <div class="topbar-event-name" id="topbar-name">Loading...</div>
-    <div class="topbar-event-date" id="topbar-date"></div>
-  </div>
   <div class="db-status" id="db-status"><div class="db-dot" id="db-dot"></div><span id="db-label">connecting</span></div>
-  <button class="secret-btn" onclick="toggleOwnerTab()" tabindex="-1" title="">
+  <button class="secret-btn" onclick="toggleOwnerTab()" tabindex="-1">
     <svg width="13" height="13" viewBox="0 0 12 12" fill="none" stroke="#7a82a0" stroke-width="2" stroke-linecap="round"><circle cx="6" cy="6" r="4.5"/><line x1="6" y1="3.5" x2="6" y2="6"/><circle cx="6" cy="8.5" r="0.5" fill="#7a82a0"/></svg>
   </button>
 </div>
 
-<div class="banner">
+<div class="event-switcher" id="event-switcher"><div class="loading">Loading events...</div></div>
+
+<div class="banner" id="main-banner" style="display:none">
   <div class="banner-title" id="ev-title">Event Signup</div>
-  <div class="banner-desc" id="ev-desc">Pick your weapons and sign up. The organiser will sort parties.</div>
+  <div class="banner-desc" id="ev-desc">Pick your weapons and sign up.</div>
   <div class="stat-center">
-    <div class="stat"><div class="val" id="s-total">—</div><div class="lbl">signed up</div></div>
+    <div class="stat"><div class="val" id="s-total">0</div><div class="lbl">signed up</div></div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<div class="tabs">
-  <div class="tab active" onclick="nav('signup')" id="tab-signup">Sign up</div>
-  <div class="tab" onclick="nav('parties')" id="tab-parties">Parties</div>
-  <div class="tab" id="owner-tab" style="display:none" onclick="nav('owner')">&#9881;</div>
-</div>
-
-<div id="v-signup" class="view on">
-  <div id="already-signed" style="display:none"></div>
-  <div id="signup-form-wrap">
-    <div class="card">
-      <div class="section-lbl" style="margin-bottom:1.2rem">Join the event</div>
-      <div class="row2">
-        <div><label>Character name</label><input id="i-name" placeholder="Your in-game name..." onkeydown="if(event.key==='Enter')doSignup()"></div>
-        <div><label>Primary weapon</label><select id="i-w1"><option value="">— choose weapon —</option></select></div>
-      </div>
-      <div class="row2" style="margin-bottom:18px">
-        <div><label>Secondary weapon <span style="font-weight:400;font-size:12px;color:#4a5070">(optional)</span></label><select id="i-w2"><option value="">— flexible / none —</option></select></div>
-        <div><label>Note <span style="font-weight:400;font-size:12px;color:#4a5070">(optional)</span></label><input id="i-note" placeholder="e.g. can swap to healer"></div>
-      </div>
-      <button class="btn btn-accent" onclick="doSignup()" style="font-size:16px;padding:13px 32px">Sign me up</button>
-    </div>
+<div id="event-content" style="display:none">
+  <div class="tabs">
+    <div class="tab active" onclick="nav('signup')" id="tab-signup">Sign up</div>
+    <div class="tab" onclick="nav('parties')" id="tab-parties">Parties</div>
+    <div class="tab" id="owner-tab" style="display:none" onclick="nav('owner')">&#9881;</div>
   </div>
-  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-top:1.6rem">
-    <div class="section-lbl" style="margin:0">Signed up</div>
-    <span id="total-badge" style="font-size:14px;color:#7a82a0">0 players</span>
-  </div>
-  <div id="signup-list"><div class="loading">Loading signups...</div></div>
-</div>
 
-<div id="v-parties" class="view">
-  <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Party compositions set by the organiser.</div>
-  <div class="parties-wrap" id="public-parties"><div class="loading">Loading parties...</div></div>
-</div>
-
-<div id="v-owner" class="view">
-  <div class="lock-box" id="lock-screen">
-    <h2>Owner access</h2>
-    <p>Enter the password to manage events, parties and signups.</p>
-    <div class="lock-row">
-      <input type="password" id="pw-inp" placeholder="Password..." onkeydown="if(event.key==='Enter')unlock()">
-      <button class="btn btn-accent" onclick="unlock()">Enter</button>
-    </div>
-    <div style="margin-top:12px;font-size:13px;color:#4a5070;font-style:italic">Password set in config.js</div>
-  </div>
-  <div id="owner-content" style="display:none">
-    <div class="owner-bar">
-      <span>Owner mode active — signup limit bypassed</span>
-      <button class="btn btn-sm" onclick="lockOwner()">Lock</button>
-    </div>
-    <div class="owner-tabs">
-      <div class="owner-tab active" onclick="ownerNav('event')">Current event</div>
-      <div class="owner-tab" onclick="ownerNav('parties')">Parties</div>
-      <div class="owner-tab" onclick="ownerNav('default')">Default party</div>
-      <div class="owner-tab" onclick="ownerNav('signups')">Signups</div>
-      <div class="owner-tab" onclick="ownerNav('history')">History</div>
-      <div class="owner-tab" onclick="ownerNav('weapons')">Weapon list</div>
-    </div>
-
-    <div id="ov-event" class="owner-view on">
+  <div id="v-signup" class="view on">
+    <div id="already-signed" style="display:none"></div>
+    <div id="loadout-bar"></div>
+    <div id="signup-form-wrap">
       <div class="card">
-        <div class="section-lbl" style="margin-bottom:1.2rem">Event settings</div>
+        <div class="section-lbl" style="margin-bottom:1.2rem">Join the event</div>
         <div class="row2">
-          <div><label>Event name (top bar)</label><input id="o-event-name" placeholder="e.g. Faction War #12" oninput="scheduleMetaSave()"></div>
-          <div><label>Date / time</label><input id="o-event-date" placeholder="e.g. Saturday 20:00 CET" oninput="scheduleMetaSave()"></div>
+          <div><label>Character name</label><input id="i-name" placeholder="Your in-game name..." onkeydown="if(event.key==='Enter')doSignup()"></div>
+          <div><label>Primary weapon</label><select id="i-w1"><option value="">— choose weapon —</option></select></div>
         </div>
-        <div class="row2">
-          <div><label>Signup sheet title (banner)</label><input id="o-ev-title" placeholder="e.g. Signup for Faction War" oninput="scheduleMetaSave()"></div>
-          <div><label>Signup description</label><input id="o-ev-desc" placeholder="e.g. Pick your weapon below." oninput="scheduleMetaSave()"></div>
+        <div class="row2" style="margin-bottom:18px">
+          <div><label>Secondary weapon <span style="font-weight:400;font-size:12px;color:#4a5070">(optional)</span></label><select id="i-w2"><option value="">— flexible / none —</option></select></div>
+          <div><label>Note <span style="font-weight:400;font-size:12px;color:#4a5070">(optional)</span></label><input id="i-note" placeholder="e.g. can swap to healer"></div>
         </div>
+        <button class="btn btn-accent" onclick="doSignup()" style="font-size:16px;padding:13px 32px">Sign me up</button>
+        <button class="btn" onclick="saveLoadout()" style="font-size:14px;padding:13px 20px;margin-left:8px">Save as my loadout</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;margin-top:1.6rem">
+      <div class="section-lbl" style="margin:0">Signed up</div>
+      <span id="total-badge" style="font-size:14px;color:#7a82a0">0 players</span>
+    </div>
+    <div id="signup-list"><div class="loading">Loading...</div></div>
+  </div>
+
+  <div id="v-parties" class="view">
+    <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Party compositions set by the organiser.</div>
+    <div class="parties-wrap" id="public-parties"></div>
+  </div>
+
+  <div id="v-owner" class="view">
+    <div class="lock-box" id="lock-screen">
+      <h2>Owner access</h2>
+      <p>Enter the password to manage events, parties and signups.</p>
+      <div class="lock-row">
+        <input type="password" id="pw-inp" placeholder="Password..." onkeydown="if(event.key==='Enter')unlock()">
+        <button class="btn btn-accent" onclick="unlock()">Enter</button>
+      </div>
+      <div style="margin-top:12px;font-size:13px;color:#4a5070;font-style:italic">Password set in config.js</div>
+    </div>
+    <div id="owner-content" style="display:none">
+      <div class="owner-bar">
+        <span>Owner mode — managing: <strong id="owner-event-label" style="color:#c5bcf6"></strong></span>
+        <button class="btn btn-sm" onclick="lockOwner()">Lock</button>
+      </div>
+      <div class="owner-tabs">
+        <div class="owner-tab active" onclick="ownerNav('event')">Event settings</div>
+        <div class="owner-tab" onclick="ownerNav('parties')">Parties</div>
+        <div class="owner-tab" onclick="ownerNav('default')">Default party</div>
+        <div class="owner-tab" onclick="ownerNav('signups')">Signups</div>
+        <div class="owner-tab" onclick="ownerNav('history')">History</div>
+        <div class="owner-tab" onclick="ownerNav('weapons')">Weapon list</div>
+        <div class="owner-tab" onclick="ownerNav('manage-events')">Manage events</div>
+      </div>
+
+      <div id="ov-event" class="owner-view on">
+        <div class="card">
+          <div class="section-lbl" style="margin-bottom:1.2rem">Settings for: <span id="ov-event-name-label" style="color:#c5bcf6"></span></div>
+          <div class="row2">
+            <div><label>Event name / time <span style="font-size:12px;color:#4a5070">(shown on card)</span></label><input id="o-event-name" placeholder="e.g. 18:00 UTC — Faction War" oninput="scheduleMetaSave()"></div>
+            <div><label>Date</label><input id="o-event-date" placeholder="e.g. Saturday 14 June" oninput="scheduleMetaSave()"></div>
+          </div>
+          <div class="row2">
+            <div><label>Signup sheet title (banner)</label><input id="o-ev-title" placeholder="e.g. 18 UTC Signup" oninput="scheduleMetaSave()"></div>
+            <div><label>Description</label><input id="o-ev-desc" placeholder="e.g. Sign up for the 18 UTC run." oninput="scheduleMetaSave()"></div>
+          </div>
+          <div class="divider"></div>
+          <div class="section-lbl" style="margin-bottom:10px">Event actions</div>
+          <div class="btn-row">
+            <button class="btn btn-amber" onclick="saveToHistory()">Save &amp; archive</button>
+            <button class="btn btn-danger" onclick="resetEvent()">Reset sheet</button>
+            <button class="btn btn-ok" onclick="exportList()">Export list</button>
+          </div>
+          <div style="margin-top:10px;font-size:13px;color:#4a5070">Reset clears signups and restores default weapons for this event only.</div>
+        </div>
+      </div>
+
+      <div id="ov-parties" class="owner-view">
+        <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Players with the matching weapon appear at the top of the dropdown.</div>
+        <div class="o-parties-wrap" id="o-parties"></div>
+      </div>
+
+      <div id="ov-default" class="owner-view">
+        <div class="info-box"><strong style="color:#c5bcf6">Default party template</strong> — weapon slots here are restored on every reset for this event.</div>
+        <div class="btn-row" style="margin-bottom:1.2rem">
+          <button class="btn btn-purple" onclick="saveCurrentAsDefault()">Copy current parties → set as default</button>
+          <button class="btn btn-danger btn-sm" onclick="clearDefault()">Clear default</button>
+        </div>
+        <div class="o-parties-wrap" id="default-parties"></div>
+      </div>
+
+      <div id="ov-signups" class="owner-view">
+        <div class="section-lbl">All signups</div>
+        <div id="o-signup-list"></div>
         <div class="divider"></div>
-        <div class="section-lbl" style="margin-bottom:10px">Event actions</div>
-        <div class="btn-row">
-          <button class="btn btn-amber" onclick="saveToHistory()">Save &amp; archive</button>
-          <button class="btn btn-danger" onclick="resetEvent()">Reset sheet</button>
-          <button class="btn btn-ok" onclick="exportList()">Export list</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div class="section-lbl" style="margin:0">Blocked browsers</div>
+          <button class="btn btn-sm btn-danger" onclick="clearAllBlocked()">Clear all blocks</button>
         </div>
-        <div style="margin-top:10px;font-size:13px;color:#4a5070">Reset clears all signups, restores default weapon slots, and clears signup blocks.</div>
+        <div id="blocked-list"></div>
       </div>
-    </div>
 
-    <div id="ov-parties" class="owner-view">
-      <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Players matching the slot weapon appear at the top of the dropdown.</div>
-      <div class="o-parties-wrap" id="o-parties"></div>
-    </div>
-
-    <div id="ov-default" class="owner-view">
-      <div class="info-box"><strong style="color:#c5bcf6">Default party template</strong> — weapon slots set here are restored on every reset.</div>
-      <div class="btn-row" style="margin-bottom:1.2rem">
-        <button class="btn btn-purple" onclick="saveCurrentAsDefault()">Copy current parties → set as default</button>
-        <button class="btn btn-danger btn-sm" onclick="clearDefault()">Clear default</button>
+      <div id="ov-history" class="owner-view">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+          <div class="section-lbl" style="margin:0">Past events</div>
+          <button class="btn btn-danger btn-sm" onclick="clearHistory()">Clear history</button>
+        </div>
+        <div id="history-list"></div>
       </div>
-      <div class="o-parties-wrap" id="default-parties"></div>
-    </div>
 
-    <div id="ov-signups" class="owner-view">
-      <div class="section-lbl">All signups</div>
-      <div id="o-signup-list"></div>
-      <div class="divider"></div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-        <div class="section-lbl" style="margin:0">Blocked browsers</div>
-        <button class="btn btn-sm btn-danger" onclick="clearAllBlocked()">Clear all blocks</button>
+      <div id="ov-weapons" class="owner-view">
+        <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Weapon list is shared across all events.</div>
+        <div id="weapon-editor"></div>
+        <div class="new-cat-row">
+          <input id="new-cat-inp" placeholder="New category name..." onkeydown="if(event.key==='Enter')addCategory()">
+          <button class="btn btn-accent btn-sm" onclick="addCategory()">+ Add category</button>
+        </div>
       </div>
-      <div id="blocked-list"></div>
-    </div>
 
-    <div id="ov-history" class="owner-view">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <div class="section-lbl" style="margin:0">Past events</div>
-        <button class="btn btn-danger btn-sm" onclick="clearHistory()">Clear history</button>
-      </div>
-      <div id="history-list"></div>
-    </div>
-
-    <div id="ov-weapons" class="owner-view">
-      <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Changes apply immediately to the signup dropdowns.</div>
-      <div id="weapon-editor"></div>
-      <div class="new-cat-row">
-        <input id="new-cat-inp" placeholder="New category name..." onkeydown="if(event.key==='Enter')addCategory()">
-        <button class="btn btn-accent btn-sm" onclick="addCategory()">+ Add category</button>
+      <div id="ov-manage-events" class="owner-view">
+        <div class="section-lbl">All events</div>
+        <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Players switch between events using the cards at the top of the page. Each event has its own signups, parties and settings.</div>
+        <div id="manage-events-list"></div>
+        <div style="margin-top:1.2rem;display:flex;gap:10px">
+          <input id="new-event-name" placeholder="New event e.g. 20:00 UTC" style="flex:1;font-size:14px">
+          <button class="btn btn-accent" onclick="addEvent()">+ Add event</button>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+<div id="no-events" style="display:none">
+  <div class="empty-msg" style="padding:4rem">No events open yet. The organiser will set up events soon.</div>
 </div>
 
+</div>
 <script src="config.js"></script>
 <script>
-// ── Supabase client ───────────────────────────────────────────────
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const{createClient}=supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-// ── State ─────────────────────────────────────────────────────────
-let WEAPONS={
-  "Swords":["Broadsword","Claymore","Carving Sword","Dual Swords","Galatine Pair","Bloodletter"],
-  "Axes":["Battleaxe","Greataxe","Hatchet","Infernal Scythe","Kingmaker","Bear Paws"],
-  "Maces":["Mace","War Hammer","Morning Star","Bedrock Mace","Camlann Mace","Steelhoof Mace"],
-  "Hammers":["Hammer","Polehammer","Great Hammer","Tombhammer","Forge Hammers","Judicator Hammer"],
-  "Crossbows":["Crossbow","Heavy Crossbow","Light Crossbow","Weeping Repeater","Siegebow","Boltcasters"],
-  "Bows":["Bow","Warbow","Longbow","Whispering Bow","Bow of Badon","Energy Shaper"],
-  "Spears":["Spear","Pike","Glaive","Trinity Spear","Heron Spear","Spirithunter"],
-  "Daggers":["Dagger","Dagger Pair","Claws","Deathgivers","Black Hands","Bridled Fury"],
-  "Quarterstaffs":["Quarterstaff","Iron-Clad Staff","Double Bladed Staff","Soulscythe","Grailseeker","Rift Glaive"],
-  "Holy Staves":["Holy Staff","Divine Staff","Lifetouch Staff","Hallowfall","Redemption Staff","Fallen Staff"],
-  "Arcane Staves":["Arcane Staff","Great Arcane Staff","Witchwork Staff","Occult Staff","Enigmatic Staff","Astral Aegis"],
-  "Fire Staves":["Fire Staff","Great Fire Staff","Infernal Staff","Blazing Staff","Brimstone Staff","Malevolent Locus"],
-  "Frost Staves":["Frost Staff","Great Frost Staff","Glacial Staff","Icicle Staff","Permafrost Prism","Hoarfrost Staff"],
-  "Nature Staves":["Nature Staff","Great Nature Staff","Ironroot Staff","Druidic Staff","Blight Staff","Rampant Staff"],
-  "Curse Staves":["Curse Staff","Great Curse Staff","Demon Staff","Shadowcaller","Lifecurse Staff","Skulljack"],
-  "Off-hands":["Torch","Muisak","Taproot","Eye of Secrets","Mistcaller","Facebreaker","Carrioncaller","Cryptcandle"]
-};
+let WEAPONS={"Swords":["Broadsword","Claymore","Carving Sword","Dual Swords","Galatine Pair","Bloodletter"],"Axes":["Battleaxe","Greataxe","Hatchet","Infernal Scythe","Kingmaker","Bear Paws"],"Maces":["Mace","War Hammer","Morning Star","Bedrock Mace","Camlann Mace","Steelhoof Mace"],"Hammers":["Hammer","Polehammer","Great Hammer","Tombhammer","Forge Hammers","Judicator Hammer"],"Crossbows":["Crossbow","Heavy Crossbow","Light Crossbow","Weeping Repeater","Siegebow","Boltcasters"],"Bows":["Bow","Warbow","Longbow","Whispering Bow","Bow of Badon","Energy Shaper"],"Spears":["Spear","Pike","Glaive","Trinity Spear","Heron Spear","Spirithunter"],"Daggers":["Dagger","Dagger Pair","Claws","Deathgivers","Black Hands","Bridled Fury"],"Quarterstaffs":["Quarterstaff","Iron-Clad Staff","Double Bladed Staff","Soulscythe","Grailseeker","Rift Glaive"],"Holy Staves":["Holy Staff","Divine Staff","Lifetouch Staff","Hallowfall","Redemption Staff","Fallen Staff"],"Arcane Staves":["Arcane Staff","Great Arcane Staff","Witchwork Staff","Occult Staff","Enigmatic Staff","Astral Aegis"],"Fire Staves":["Fire Staff","Great Fire Staff","Infernal Staff","Blazing Staff","Brimstone Staff","Malevolent Locus"],"Frost Staves":["Frost Staff","Great Frost Staff","Glacial Staff","Icicle Staff","Permafrost Prism","Hoarfrost Staff"],"Nature Staves":["Nature Staff","Great Nature Staff","Ironroot Staff","Druidic Staff","Blight Staff","Rampant Staff"],"Curse Staves":["Curse Staff","Great Curse Staff","Demon Staff","Shadowcaller","Lifecurse Staff","Skulljack"],"Off-hands":["Torch","Muisak","Taproot","Eye of Secrets","Mistcaller","Facebreaker","Carrioncaller","Cryptcandle"]};
 
-let parties=[
-  {name:"Party 1",accent:"#534AB7",slots:Array.from({length:20},()=>({weapon:'',player:'',playerId:null}))},
-  {name:"Party 2",accent:"#0F6E56",slots:Array.from({length:20},()=>({weapon:'',player:'',playerId:null}))}
-];
-let defaultTemplate=[
-  {name:"Party 1",slots:Array.from({length:20},()=>({weapon:''}))},
-  {name:"Party 2",slots:Array.from({length:20},()=>({weapon:''}))}
-];
-let signups=[],history=[],blocked={};
-let unlocked=false,ownerVisible=false,collapsedCats={};
-let eventMeta={name:'',date:'',title:'Event Signup',desc:'Pick your weapons and sign up. The organiser will sort parties.'};
-let metaSaveTimer=null;
+const ACCENT_COLORS=['#534AB7','#0F6E56','#993C1D','#C9A84C','#185FA5'];
+
+let eventList=[];
+let activeEventId=null;
+let eventData={};
+let history=[];
+let unlocked=false,ownerVisible=false,collapsedCats={},metaSaveTimer=null;
 
 // ── Fingerprint ───────────────────────────────────────────────────
 const FP_KEY='albion_fp';
-function getFingerprint(){
-  let fp=localStorage.getItem(FP_KEY);
-  if(!fp){fp='fp_'+Math.random().toString(36).slice(2,10)+'_'+Date.now().toString(36);localStorage.setItem(FP_KEY,fp);}
-  return fp;
-}
-function isBlocked(){if(unlocked)return false;return !!blocked[getFingerprint()];}
+function getFingerprint(){let fp=localStorage.getItem(FP_KEY);if(!fp){fp='fp_'+Math.random().toString(36).slice(2,10)+'_'+Date.now().toString(36);localStorage.setItem(FP_KEY,fp);}return fp;}
+function isBlocked(){if(unlocked)return false;const ev=getActiveEvent();if(!ev)return false;return !!(ev.blocked||{})[getFingerprint()];}
 
-// ── DB helpers ────────────────────────────────────────────────────
-async function dbGet(key){
-  const{data}=await db.from('event_state').select('value').eq('key',key).single();
-  return data?data.value:null;
+// ── Loadout ───────────────────────────────────────────────────────
+const LOADOUT_KEY='albion_loadout';
+function getLoadout(){try{return JSON.parse(localStorage.getItem(LOADOUT_KEY))||null;}catch{return null;}}
+function saveLoadout(){
+  const name=document.getElementById('i-name').value.trim();
+  const w1=document.getElementById('i-w1').value;
+  const w2=document.getElementById('i-w2').value;
+  const note=document.getElementById('i-note').value.trim();
+  if(!name&&!w1){toast('Fill in your name and weapon first.');return;}
+  localStorage.setItem(LOADOUT_KEY,JSON.stringify({name,w1,w2,note}));
+  renderLoadoutBar();toast('Loadout saved!');
 }
-async function dbSet(key,value){
-  await db.from('event_state').upsert({key,value,updated_at:new Date().toISOString()},{onConflict:'key'});
+function clearLoadout(){localStorage.removeItem(LOADOUT_KEY);renderLoadoutBar();toast('Loadout cleared.');}
+function quickSignup(){
+  const l=getLoadout();if(!l){toast('No loadout saved.');return;}
+  document.getElementById('i-name').value=l.name||'';
+  document.getElementById('i-w1').value=l.w1||'';
+  document.getElementById('i-w2').value=l.w2||'';
+  document.getElementById('i-note').value=l.note||'';
+  doSignup();
+}
+function loadIntoForm(){
+  const l=getLoadout();if(!l)return;
+  document.getElementById('i-name').value=l.name||'';
+  document.getElementById('i-w1').value=l.w1||'';
+  document.getElementById('i-w2').value=l.w2||'';
+  document.getElementById('i-note').value=l.note||'';
+  toast('Loadout loaded — edit if needed then click Sign me up.');
+}
+function renderLoadoutBar(){
+  const el=document.getElementById('loadout-bar');if(!el)return;
+  const l=getLoadout();
+  if(!l||(!l.name&&!l.w1)){el.innerHTML=`<div class="loadout-bar"><div class="loadout-bar-empty">No loadout saved — fill the form and click "Save as my loadout" for one-click signup next time.</div></div>`;return;}
+  const w=l.w1+(l.w2?' / '+l.w2:'');
+  el.innerHTML=`<div class="loadout-bar"><div class="loadout-info"><div class="loadout-info-name">Your loadout: ${l.name||'(no name)'}</div><div class="loadout-info-weapons">${w||'no weapon'}${l.note?' · '+l.note:''}</div></div><button class="loadout-quick-btn" onclick="quickSignup()">⚡ Sign up with loadout</button><button class="btn btn-sm" onclick="loadIntoForm()">Edit first</button><button class="btn btn-sm btn-danger" onclick="clearLoadout()">Clear</button></div>`;
 }
 
-function setDbStatus(ok,label){
-  document.getElementById('db-dot').className='db-dot '+(ok?'ok':'err');
-  document.getElementById('db-label').textContent=label;
-}
+// ── DB ────────────────────────────────────────────────────────────
+async function dbGet(key){const{data}=await db.from('event_state').select('value').eq('key',key).single();return data?data.value:null;}
+async function dbSet(key,value){await db.from('event_state').upsert({key,value,updated_at:new Date().toISOString()},{onConflict:'key'});}
+async function dbDel(key){await db.from('event_state').delete().eq('key',key);}
+function setDbStatus(ok,label){document.getElementById('db-dot').className='db-dot '+(ok?'ok':'err');document.getElementById('db-label').textContent=label;}
+function getActiveEvent(){return eventData[activeEventId]||null;}
+function defaultEventData(){return{meta:{name:'',date:'',title:'Event Signup',desc:'Pick your weapons and sign up.'},signups:[],parties:[{name:"Party 1",accent:"#534AB7",slots:Array.from({length:20},()=>({weapon:'',player:'',playerId:null}))},{name:"Party 2",accent:"#0F6E56",slots:Array.from({length:20},()=>({weapon:'',player:'',playerId:null}))}],defaultTemplate:[{name:"Party 1",slots:Array.from({length:20},()=>({weapon:''}))},{name:"Party 2",slots:Array.from({length:20},()=>({weapon:''}))}],blocked:{}};}
 
-// ── Load all state from DB ────────────────────────────────────────
+async function loadEventFromDB(id){const raw=await dbGet('event_'+id);eventData[id]=raw||defaultEventData();}
+async function saveActiveEvent(){if(!activeEventId)return;await dbSet('event_'+activeEventId,eventData[activeEventId]);}
+
 async function loadAll(){
   try{
-    const[meta,sups,parts,bloc,hist,weap,def]=await Promise.all([
-      dbGet('event_meta'),dbGet('signups'),dbGet('parties'),
-      dbGet('blocked'),dbGet('history'),dbGet('weapons'),dbGet('default_template')
-    ]);
-    if(meta){eventMeta=meta;applyMeta();}
-    if(sups)signups=sups;
-    if(parts)parties=parts;
-    if(bloc)blocked=bloc;
-    if(hist)history=hist;
+    const[evList,hist,weap]=await Promise.all([dbGet('event_list'),dbGet('history'),dbGet('weapons')]);
+    eventList=evList||[{id:'default',name:'Event Signup'}];
+    history=hist||[];
     if(weap)WEAPONS=weap;
-    if(def)defaultTemplate=def;
+    await Promise.all(eventList.map(e=>loadEventFromDB(e.id)));
     setDbStatus(true,'live');
-  }catch(e){
-    setDbStatus(false,'offline');
-    console.error('DB load error:',e);
-  }
+  }catch(e){setDbStatus(false,'offline');console.error(e);eventList=[{id:'default',name:'Event Signup'}];eventData['default']=defaultEventData();}
 }
-
-async function saveSignups(){await dbSet('signups',signups);}
-async function saveParties(){await dbSet('parties',parties);}
-async function saveBlocked(){await dbSet('blocked',blocked);}
+async function saveEventList(){await dbSet('event_list',eventList);}
 async function saveHistory(){await dbSet('history',history);}
 async function saveWeapons(){await dbSet('weapons',WEAPONS);}
-async function saveDefaultTemplate(){await dbSet('default_template',defaultTemplate);}
-async function saveEventMeta(){await dbSet('event_meta',eventMeta);}
 
-function scheduleMetaSave(){
-  const n=document.getElementById('o-event-name').value;
-  const d=document.getElementById('o-event-date').value;
-  const t=document.getElementById('o-ev-title').value;
-  const ds=document.getElementById('o-ev-desc').value;
-  eventMeta={name:n,date:d,title:t||'Event Signup',desc:ds||'Pick your weapons and sign up.'};
-  applyMeta();
-  clearTimeout(metaSaveTimer);
-  metaSaveTimer=setTimeout(saveEventMeta,1000);
-}
-
-function applyMeta(){
-  document.getElementById('topbar-name').textContent=eventMeta.name||'No active event';
-  document.getElementById('topbar-date').textContent=eventMeta.date||'';
-  document.getElementById('ev-title').textContent=eventMeta.title||'Event Signup';
-  document.getElementById('ev-desc').textContent=eventMeta.desc||'Pick your weapons and sign up.';
-}
-
-// ── Realtime subscriptions ────────────────────────────────────────
 function subscribeRealtime(){
-  db.channel('event_state_changes')
+  db.channel('ev_rt')
     .on('postgres_changes',{event:'*',schema:'public',table:'event_state'},async(payload)=>{
-      const key=payload.new?.key;
-      const val=payload.new?.value;
-      if(!val)return;
-      if(key==='signups'){signups=val;renderSignupList();updateStats();}
-      if(key==='parties'){parties=val;renderPublicParties();if(unlocked)renderOwnerParties();}
-      if(key==='event_meta'){eventMeta=val;applyMeta();}
-      if(key==='blocked'){blocked=val;updateSignupUI();}
-    })
-    .subscribe();
+      const key=payload.new?.key;const val=payload.new?.value;if(!val)return;
+      if(key==='event_list'){eventList=val;await Promise.all(eventList.map(async e=>{if(!eventData[e.id])await loadEventFromDB(e.id);}));renderEventSwitcher();return;}
+      if(key==='history'){history=val;return;}
+      if(key==='weapons'){WEAPONS=val;rebuildSelects();return;}
+      if(key&&key.startsWith('event_')){const id=key.slice(6);eventData[id]=val;if(id===activeEventId){applyMeta();renderAll();updateSignupUI();}renderEventSwitcher();}
+    }).subscribe();
 }
 
-// ── Init ──────────────────────────────────────────────────────────
 async function init(){
   rebuildSelects();
   await loadAll();
-  updateSignupUI();
-  renderAll();
+  if(eventList.length>0)selectEvent(eventList[0].id,false);
+  renderEventSwitcher();
+  renderLoadoutBar();
   subscribeRealtime();
 }
 
@@ -410,388 +412,222 @@ function rebuildSelects(){
   ['i-w1','i-w2'].forEach((id,idx)=>{
     const s=document.getElementById(id);const cur=s.value;
     s.innerHTML=idx===1?'<option value="">— flexible / none —</option>':'<option value="">— choose weapon —</option>';
-    for(const[cat,weps] of Object.entries(WEAPONS)){
-      const og=document.createElement('optgroup');og.label=cat;
-      weps.forEach(w=>{const o=document.createElement('option');o.value=w;o.textContent=w;og.appendChild(o);});
-      s.appendChild(og);
-    }
+    for(const[cat,weps] of Object.entries(WEAPONS)){const og=document.createElement('optgroup');og.label=cat;weps.forEach(w=>{const o=document.createElement('option');o.value=w;o.textContent=w;og.appendChild(o);});s.appendChild(og);}
     s.value=cur;
   });
 }
 
-function toggleOwnerTab(){
-  ownerVisible=!ownerVisible;
-  document.getElementById('owner-tab').style.display=ownerVisible?'block':'none';
-  if(!ownerVisible&&document.getElementById('v-owner').classList.contains('on'))nav('signup');
+// ── Event switcher ────────────────────────────────────────────────
+function selectEvent(id,doRender=true){
+  activeEventId=id;
+  document.getElementById('main-banner').style.display='block';
+  document.getElementById('event-content').style.display='block';
+  document.getElementById('no-events').style.display='none';
+  const idx=eventList.findIndex(e=>e.id===id);
+  document.getElementById('main-banner').style.borderTopColor=ACCENT_COLORS[idx%ACCENT_COLORS.length];
+  applyMeta();updateSignupUI();
+  if(doRender)renderAll();
+  if(unlocked){syncOwnerInputs();const ev=getActiveEvent();const label=ev?.meta?.name||eventList.find(e=>e.id===id)?.name||id;document.getElementById('owner-event-label').textContent=label;document.getElementById('ov-event-name-label').textContent=label;}
+  renderEventSwitcher();
+  nav('signup');
 }
 
-function nav(v){
-  document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));
-  document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));
-  document.getElementById('v-'+v).classList.add('on');
-  const t=document.getElementById('tab-'+v);if(t)t.classList.add('active');
-  renderAll();
+function renderEventSwitcher(){
+  const el=document.getElementById('event-switcher');
+  if(!eventList.length){el.innerHTML='';document.getElementById('no-events').style.display='block';document.getElementById('event-content').style.display='none';document.getElementById('main-banner').style.display='none';return;}
+  let html=eventList.map((e,i)=>{
+    const evd=eventData[e.id];const count=(evd?.signups||[]).length;const meta=evd?.meta||{};const isActive=e.id===activeEventId;const color=ACCENT_COLORS[i%ACCENT_COLORS.length];
+    return `<div class="event-card${isActive?' active':''}" onclick="selectEvent('${e.id}')" style="border-top-color:${color}${isActive?';border-color:'+color:''}">
+      ${isActive?`<div class="event-card-badge">viewing</div>`:''}
+      <div class="event-card-time" style="color:${color}">${meta.name||e.name||'Event '+(i+1)}</div>
+      <div class="event-card-date">${meta.date||'No date set'}</div>
+      <div class="event-card-count">${count} signed up</div>
+    </div>`;
+  }).join('');
+  if(unlocked)html+=`<div class="add-event-card" onclick="ownerNav('manage-events');nav('owner')"><div class="add-event-plus">+</div><div class="add-event-label">Add event</div></div>`;
+  el.innerHTML=html;
 }
 
+// ── Nav ───────────────────────────────────────────────────────────
+function toggleOwnerTab(){ownerVisible=!ownerVisible;document.getElementById('owner-tab').style.display=ownerVisible?'block':'none';if(!ownerVisible&&document.getElementById('v-owner').classList.contains('on'))nav('signup');renderEventSwitcher();}
+function nav(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove('on'));document.querySelectorAll('.tab').forEach(e=>e.classList.remove('active'));document.getElementById('v-'+v).classList.add('on');const t=document.getElementById('tab-'+v);if(t)t.classList.add('active');renderAll();}
 function ownerNav(v){
-  document.querySelectorAll('.owner-view').forEach(e=>e.classList.remove('on'));
-  document.querySelectorAll('.owner-tab').forEach(e=>e.classList.remove('active'));
-  document.getElementById('ov-'+v).classList.add('on');
-  document.querySelectorAll('.owner-tab').forEach(t=>{
-    if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+v+"'"))t.classList.add('active');
-  });
-  if(v==='weapons')renderWeaponEditor();
-  if(v==='history')renderHistory();
-  if(v==='default')renderDefaultParties();
-  if(v==='signups'){renderOwnerSignups();renderBlockedList();}
+  document.querySelectorAll('.owner-view').forEach(e=>e.classList.remove('on'));document.querySelectorAll('.owner-tab').forEach(e=>e.classList.remove('active'));
+  document.getElementById('ov-'+v).classList.add('on');document.querySelectorAll('.owner-tab').forEach(t=>{if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+v+"'"))t.classList.add('active');});
+  if(v==='weapons')renderWeaponEditor();if(v==='history')renderHistory();if(v==='default')renderDefaultParties();if(v==='signups'){renderOwnerSignups();renderBlockedList();}if(v==='manage-events')renderManageEvents();
 }
 
 // ── Signup ────────────────────────────────────────────────────────
 function updateSignupUI(){
-  const alreadyEl=document.getElementById('already-signed');
-  const formEl=document.getElementById('signup-form-wrap');
-  if(isBlocked()){
-    const entry=blocked[getFingerprint()];
-    alreadyEl.style.display='block';
-    alreadyEl.innerHTML=`<div class="signed-banner"><div class="signed-banner-title">You're already signed up!</div><div class="signed-banner-sub">Signed up as <strong>${entry.name}</strong>. Only one signup per person is allowed.</div></div>`;
-    formEl.style.display='none';
-  }else{alreadyEl.style.display='none';formEl.style.display='block';}
+  const a=document.getElementById('already-signed');const f=document.getElementById('signup-form-wrap');if(!a||!f)return;
+  if(isBlocked()&&!unlocked){const ev=getActiveEvent();const entry=(ev?.blocked||{})[getFingerprint()];a.style.display='block';a.innerHTML=`<div class="signed-banner"><div class="signed-banner-title">You're already signed up for this event!</div><div class="signed-banner-sub">Signed up as <strong>${entry?.name||'you'}</strong>. Switch to another event above to sign up for that one too.</div></div>`;f.style.display='none';}
+  else{a.style.display='none';f.style.display='block';}
 }
-
 async function doSignup(){
-  if(isBlocked()){toast('You have already signed up.');return;}
-  const name=document.getElementById('i-name').value.trim();
-  const w1=document.getElementById('i-w1').value;
-  const w2=document.getElementById('i-w2').value;
-  const note=document.getElementById('i-note').value.trim();
-  if(!name){toast('Enter your character name');return;}
-  if(!w1){toast('Select a primary weapon');return;}
-  if(signups.find(s=>s.name.toLowerCase()===name.toLowerCase())){toast('That character name is already taken');return;}
-  const fp=getFingerprint();
-  const id=Date.now();
-  signups.push({id,name,w1,w2,note,fp});
-  blocked[fp]={name,signedAt:new Date().toLocaleTimeString()};
-  document.getElementById('i-name').value='';
-  document.getElementById('i-w1').value='';
-  document.getElementById('i-w2').value='';
-  document.getElementById('i-note').value='';
-  updateSignupUI();
-  renderSignupList();updateStats();
-  await Promise.all([saveSignups(),saveBlocked()]);
+  if(isBlocked()){toast('Already signed up for this event.');return;}
+  const ev=getActiveEvent();if(!ev)return;
+  const name=document.getElementById('i-name').value.trim();const w1=document.getElementById('i-w1').value;const w2=document.getElementById('i-w2').value;const note=document.getElementById('i-note').value.trim();
+  if(!name){toast('Enter your character name');return;}if(!w1){toast('Select a primary weapon');return;}
+  if(ev.signups.find(s=>s.name.toLowerCase()===name.toLowerCase())){toast('That name is already signed up for this event');return;}
+  const fp=getFingerprint();const id=Date.now();
+  ev.signups.push({id,name,w1,w2,note,fp});ev.blocked[fp]={name,signedAt:new Date().toLocaleTimeString()};
+  document.getElementById('i-name').value='';document.getElementById('i-w1').value='';document.getElementById('i-w2').value='';document.getElementById('i-note').value='';
+  updateSignupUI();renderLoadoutBar();renderSignupList();updateStats();await saveActiveEvent();renderEventSwitcher();
   toast('Signed up! See you on the battlefield.');
 }
-
 async function removeSignup(id){
-  const s=signups.find(x=>x.id===id);
-  if(s?.fp&&blocked[s.fp])delete blocked[s.fp];
-  signups=signups.filter(x=>x.id!==id);
-  parties.forEach(p=>p.slots.forEach(sl=>{if(sl.playerId===id){sl.player='';sl.playerId=null;}}));
-  updateSignupUI();renderAll();
-  await Promise.all([saveSignups(),saveBlocked(),saveParties()]);
+  const ev=getActiveEvent();if(!ev)return;const s=ev.signups.find(x=>x.id===id);
+  if(s?.fp&&ev.blocked[s.fp])delete ev.blocked[s.fp];
+  ev.signups=ev.signups.filter(x=>x.id!==id);ev.parties.forEach(p=>p.slots.forEach(sl=>{if(sl.playerId===id){sl.player='';sl.playerId=null;}}));
+  updateSignupUI();renderAll();renderEventSwitcher();await saveActiveEvent();
 }
-
-async function clearAllBlocked(){
-  if(!confirm('Unblock all browsers?'))return;
-  blocked={};
-  updateSignupUI();renderBlockedList();
-  await saveBlocked();
-  toast('All blocks cleared.');
-}
-
-function unblockFp(fp){
-  delete blocked[fp];
-  updateSignupUI();renderBlockedList();
-  saveBlocked();
-}
+async function clearAllBlocked(){if(!confirm('Unblock all for this event?'))return;const ev=getActiveEvent();if(!ev)return;ev.blocked={};updateSignupUI();renderBlockedList();await saveActiveEvent();toast('All blocks cleared.');}
+function unblockFp(fp){const ev=getActiveEvent();if(!ev)return;delete ev.blocked[fp];updateSignupUI();renderBlockedList();saveActiveEvent();}
 
 // ── Party ops ─────────────────────────────────────────────────────
-async function setSlotWeapon(pi,si,val){
-  parties[pi].slots[si].weapon=val;
-  renderPublicParties();renderOwnerParties();
-  await saveParties();
-}
+async function setSlotWeapon(pi,si,val){const ev=getActiveEvent();if(!ev)return;ev.parties[pi].slots[si].weapon=val;renderPublicParties();renderOwnerParties();await saveActiveEvent();}
 async function setSlotPlayer(pi,si,val){
-  const id=parseInt(val)||null;
-  parties.forEach(p=>p.slots.forEach(sl=>{if(sl.playerId===id){sl.player='';sl.playerId=null;}}));
-  if(id){const pl=signups.find(s=>s.id===id);if(pl){parties[pi].slots[si].player=pl.name;parties[pi].slots[si].playerId=id;}}
-  else{parties[pi].slots[si].player='';parties[pi].slots[si].playerId=null;}
-  renderPublicParties();renderOwnerParties();
-  await saveParties();
+  const ev=getActiveEvent();if(!ev)return;const id=parseInt(val)||null;
+  ev.parties.forEach(p=>p.slots.forEach(sl=>{if(sl.playerId===id){sl.player='';sl.playerId=null;}}));
+  if(id){const pl=ev.signups.find(s=>s.id===id);if(pl){ev.parties[pi].slots[si].player=pl.name;ev.parties[pi].slots[si].playerId=id;}}
+  else{ev.parties[pi].slots[si].player='';ev.parties[pi].slots[si].playerId=null;}
+  renderPublicParties();renderOwnerParties();await saveActiveEvent();
 }
-async function clearSlot(pi,si){
-  parties[pi].slots[si]={weapon:'',player:'',playerId:null};
-  renderPublicParties();renderOwnerParties();
-  await saveParties();
-}
-async function clearParty(pi){
-  parties[pi].slots.forEach(s=>{s.weapon='';s.player='';s.playerId=null;});
-  renderPublicParties();renderOwnerParties();
-  await saveParties();
-}
-async function setPartyName(pi,val){
-  parties[pi].name=val||'Party '+(pi+1);
-  renderPublicParties();
-  await saveParties();
-}
+async function clearSlot(pi,si){const ev=getActiveEvent();if(!ev)return;ev.parties[pi].slots[si]={weapon:'',player:'',playerId:null};renderPublicParties();renderOwnerParties();await saveActiveEvent();}
+async function clearParty(pi){const ev=getActiveEvent();if(!ev)return;ev.parties[pi].slots.forEach(s=>{s.weapon='';s.player='';s.playerId=null;});renderPublicParties();renderOwnerParties();await saveActiveEvent();}
+async function setPartyName(pi,val){const ev=getActiveEvent();if(!ev)return;ev.parties[pi].name=val||'Party '+(pi+1);renderPublicParties();await saveActiveEvent();}
 
-// ── Default template ──────────────────────────────────────────────
-async function setDefaultWeapon(pi,si,val){defaultTemplate[pi].slots[si].weapon=val;renderDefaultParties();await saveDefaultTemplate();}
-async function setDefaultPartyName(pi,val){defaultTemplate[pi].name=val||'Party '+(pi+1);await saveDefaultTemplate();}
-async function saveCurrentAsDefault(){
-  defaultTemplate=parties.map(p=>({name:p.name,slots:p.slots.map(s=>({weapon:s.weapon}))}));
-  renderDefaultParties();await saveDefaultTemplate();toast('Default template saved.');
+// ── Default ───────────────────────────────────────────────────────
+async function setDefaultWeapon(pi,si,val){const ev=getActiveEvent();if(!ev)return;ev.defaultTemplate[pi].slots[si].weapon=val;renderDefaultParties();await saveActiveEvent();}
+async function setDefaultPartyName(pi,val){const ev=getActiveEvent();if(!ev)return;ev.defaultTemplate[pi].name=val||'Party '+(pi+1);await saveActiveEvent();}
+async function saveCurrentAsDefault(){const ev=getActiveEvent();if(!ev)return;ev.defaultTemplate=ev.parties.map(p=>({name:p.name,slots:p.slots.map(s=>({weapon:s.weapon}))}));renderDefaultParties();await saveActiveEvent();toast('Default template saved.');}
+async function clearDefault(){if(!confirm('Clear default template for this event?'))return;const ev=getActiveEvent();if(!ev)return;ev.defaultTemplate=[{name:"Party 1",slots:Array.from({length:20},()=>({weapon:''}))},{name:"Party 2",slots:Array.from({length:20},()=>({weapon:''}))}];renderDefaultParties();await saveActiveEvent();toast('Default cleared.');}
+
+// ── Meta ──────────────────────────────────────────────────────────
+function scheduleMetaSave(){
+  const ev=getActiveEvent();if(!ev)return;
+  ev.meta={name:document.getElementById('o-event-name').value,date:document.getElementById('o-event-date').value,title:document.getElementById('o-ev-title').value||'Event Signup',desc:document.getElementById('o-ev-desc').value||'Pick your weapons and sign up.'};
+  applyMeta();clearTimeout(metaSaveTimer);metaSaveTimer=setTimeout(async()=>{await saveActiveEvent();renderEventSwitcher();},1000);
 }
-async function clearDefault(){
-  if(!confirm('Clear the default party template?'))return;
-  defaultTemplate=[{name:"Party 1",slots:Array.from({length:20},()=>({weapon:''}))},{name:"Party 2",slots:Array.from({length:20},()=>({weapon:''}))}];
-  renderDefaultParties();await saveDefaultTemplate();toast('Default cleared.');
+function applyMeta(){
+  const ev=getActiveEvent();if(!ev)return;const meta=ev.meta;
+  document.getElementById('ev-title').textContent=meta.title||'Event Signup';
+  document.getElementById('ev-desc').textContent=meta.desc||'Pick your weapons and sign up.';
+  if(unlocked){const label=meta.name||eventList.find(e=>e.id===activeEventId)?.name||'';document.getElementById('owner-event-label').textContent=label;document.getElementById('ov-event-name-label').textContent=label;}
 }
+function syncOwnerInputs(){const ev=getActiveEvent();if(!ev)return;const meta=ev.meta||{};document.getElementById('o-event-name').value=meta.name||'';document.getElementById('o-event-date').value=meta.date||'';document.getElementById('o-ev-title').value=meta.title||'';document.getElementById('o-ev-desc').value=meta.desc||'';}
 
 // ── Save / Reset / History ────────────────────────────────────────
 async function saveToHistory(){
-  if(!eventMeta.name&&signups.length===0){toast('Add an event name or signups first.');return;}
-  const snapshot={id:Date.now(),name:eventMeta.name||'Unnamed event',date:eventMeta.date||'',
-    savedAt:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),
-    signups:JSON.parse(JSON.stringify(signups)),parties:JSON.parse(JSON.stringify(parties))};
-  history.unshift(snapshot);
-  await saveHistory();renderHistory();
-  toast(`"${snapshot.name}" saved to history.`);
+  const ev=getActiveEvent();if(!ev)return;if(!ev.meta.name&&ev.signups.length===0){toast('Add a name or signups first.');return;}
+  const snap={id:Date.now(),name:ev.meta.name||'Unnamed',date:ev.meta.date||'',savedAt:new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'}),signups:JSON.parse(JSON.stringify(ev.signups)),parties:JSON.parse(JSON.stringify(ev.parties))};
+  history.unshift(snap);await saveHistory();renderHistory();toast(`"${snap.name}" saved to history.`);
 }
-
 async function resetEvent(){
-  if(!confirm('Reset the sheet? All signups, assignments and signup blocks will be cleared.'))return;
-  signups=[];blocked={};
-  parties.forEach((p,pi)=>{
-    p.name=defaultTemplate[pi]?.name||p.name;
-    p.slots.forEach((s,si)=>{s.weapon=defaultTemplate[pi]?.slots[si]?.weapon||'';s.player='';s.playerId=null;});
-  });
-  eventMeta={name:'',date:'',title:'Event Signup',desc:'Pick your weapons and sign up. The organiser will sort parties.'};
-  ['o-event-name','o-event-date','o-ev-title','o-ev-desc'].forEach(id=>{document.getElementById(id).value='';});
-  applyMeta();updateSignupUI();renderAll();
-  await Promise.all([saveSignups(),saveParties(),saveBlocked(),saveEventMeta()]);
-  toast('Sheet reset. Default weapons restored.');
+  if(!confirm('Reset this event? Signups and assignments cleared. Default weapons restored.'))return;
+  const ev=getActiveEvent();if(!ev)return;
+  ev.signups=[];ev.blocked={};
+  ev.parties.forEach((p,pi)=>{p.name=ev.defaultTemplate[pi]?.name||p.name;p.slots.forEach((s,si)=>{s.weapon=ev.defaultTemplate[pi]?.slots[si]?.weapon||'';s.player='';s.playerId=null;});});
+  ev.meta={name:'',date:'',title:'Event Signup',desc:'Pick your weapons and sign up.'};
+  syncOwnerInputs();applyMeta();updateSignupUI();renderAll();renderEventSwitcher();await saveActiveEvent();toast('Sheet reset.');
 }
-
-async function clearHistory(){
-  if(!confirm('Delete all history?'))return;
-  history=[];await saveHistory();renderHistory();toast('History cleared.');
-}
-
+async function clearHistory(){if(!confirm('Delete all history?'))return;history=[];await saveHistory();renderHistory();toast('History cleared.');}
 function exportList(){
-  const title=eventMeta.name||'Albion Event';
-  let t=`${title}\n${'='.repeat(40)}\n`;if(eventMeta.date)t+=`Date: ${eventMeta.date}\n`;t+='\n';
-  parties.forEach(p=>{t+=`${p.name}:\n`;p.slots.forEach((s,i)=>{t+=`  ${String(i+1).padStart(2)}. ${(s.weapon||'(open)').padEnd(26)}${s.player||'—'}\n`;});t+='\n';});
-  t+=`Signups (${signups.length}):\n`;signups.forEach((s,i)=>{t+=`  ${i+1}. ${s.name} — ${s.w1}${s.w2?' / '+s.w2:''}${s.note?' ('+s.note+')':''}\n`;});
+  const ev=getActiveEvent();if(!ev)return;const title=ev.meta.name||'Albion Event';
+  let t=`${title}\n${'='.repeat(40)}\n`;if(ev.meta.date)t+=`Date: ${ev.meta.date}\n`;t+='\n';
+  ev.parties.forEach(p=>{t+=`${p.name}:\n`;p.slots.forEach((s,i)=>{t+=`  ${String(i+1).padStart(2)}. ${(s.weapon||'(open)').padEnd(26)}${s.player||'—'}\n`;});t+='\n';});
+  t+=`Signups (${ev.signups.length}):\n`;ev.signups.forEach((s,i)=>{t+=`  ${i+1}. ${s.name} — ${s.w1}${s.w2?' / '+s.w2:''}${s.note?' ('+s.note+')':''}\n`;});
   const a=document.createElement('a');a.href='data:text/plain,'+encodeURIComponent(t);a.download=`${title.replace(/\s+/g,'-')}.txt`;a.click();
 }
-
-function exportHistoryItem(idx){
-  const ev=history[idx];let t=`${ev.name}\nSaved: ${ev.savedAt}\n\n`;
-  ev.parties.forEach(p=>{t+=`${p.name}:\n`;p.slots.forEach((s,i)=>{const pn=s.playerId?(ev.signups.find(sg=>sg.id===s.playerId)||{}).name||'—':'—';t+=`  ${String(i+1).padStart(2)}. ${(s.weapon||'(open)').padEnd(26)}${pn}\n`;});t+='\n';});
-  t+=`Signups:\n`;ev.signups.forEach((s,i)=>{t+=`  ${i+1}. ${s.name} — ${s.w1}${s.w2?' / '+s.w2:''}\n`;});
-  const a=document.createElement('a');a.href='data:text/plain,'+encodeURIComponent(t);a.download=`${ev.name.replace(/\s+/g,'-')}.txt`;a.click();
-}
+function exportHistoryItem(idx){const ev=history[idx];let t=`${ev.name}\nSaved: ${ev.savedAt}\n\n`;ev.parties.forEach(p=>{t+=`${p.name}:\n`;p.slots.forEach((s,i)=>{const pn=s.playerId?(ev.signups.find(sg=>sg.id===s.playerId)||{}).name||'—':'—';t+=`  ${String(i+1).padStart(2)}. ${(s.weapon||'(open)').padEnd(26)}${pn}\n`;});t+='\n';});t+=`Signups:\n`;ev.signups.forEach((s,i)=>{t+=`  ${i+1}. ${s.name} — ${s.w1}${s.w2?' / '+s.w2:''}\n`;});const a=document.createElement('a');a.href='data:text/plain,'+encodeURIComponent(t);a.download=`${ev.name.replace(/\s+/g,'-')}.txt`;a.click();}
 function deleteHistoryItem(idx){if(!confirm('Delete?'))return;history.splice(idx,1);saveHistory();renderHistory();}
 
-// ── Auth ──────────────────────────────────────────────────────────
-function unlock(){
-  if(document.getElementById('pw-inp').value!==OWNER_PASSWORD){toast('Wrong password');return;}
-  unlocked=true;
-  document.getElementById('lock-screen').style.display='none';
-  document.getElementById('owner-content').style.display='block';
-  document.getElementById('pw-inp').value='';
-  document.getElementById('o-event-name').value=eventMeta.name;
-  document.getElementById('o-event-date').value=eventMeta.date;
-  document.getElementById('o-ev-title').value=eventMeta.title;
-  document.getElementById('o-ev-desc').value=eventMeta.desc;
-  updateSignupUI();renderAll();
+// ── Manage events ─────────────────────────────────────────────────
+async function addEvent(){
+  const inp=document.getElementById('new-event-name');const name=inp.value.trim();if(!name){toast('Enter a name');return;}
+  const id='ev_'+Date.now();eventList.push({id,name});eventData[id]=defaultEventData();eventData[id].meta.name=name;eventData[id].meta.title=name+' Signup';inp.value='';
+  await Promise.all([saveEventList(),dbSet('event_'+id,eventData[id])]);
+  renderEventSwitcher();renderManageEvents();toast(`"${name}" created.`);
 }
-function lockOwner(){
-  unlocked=false;
-  document.getElementById('lock-screen').style.display='block';
-  document.getElementById('owner-content').style.display='none';
-  ownerVisible=false;document.getElementById('owner-tab').style.display='none';
-  updateSignupUI();nav('signup');
+async function renameEvent(id){const n=prompt('Rename:',eventList.find(e=>e.id===id)?.name||'');if(!n)return;const ev=eventList.find(e=>e.id===id);if(ev)ev.name=n;await saveEventList();renderEventSwitcher();renderManageEvents();}
+async function deleteEvent(id){
+  if(eventList.length<=1){toast("Can't delete the last event.");return;}if(!confirm('Delete this event and all its signups?'))return;
+  eventList=eventList.filter(e=>e.id!==id);delete eventData[id];await Promise.all([saveEventList(),dbDel('event_'+id)]);
+  if(activeEventId===id)selectEvent(eventList[0].id);renderEventSwitcher();renderManageEvents();toast('Event deleted.');
 }
-
-// ── Weapon editor ─────────────────────────────────────────────────
-async function addWeapon(cat){
-  const inp=document.getElementById('winp-'+cat.replace(/[^a-zA-Z0-9]/g,'_'));
-  const val=inp.value.trim();if(!val)return;
-  if(WEAPONS[cat].includes(val)){toast('Already in list');return;}
-  WEAPONS[cat].push(val);inp.value='';rebuildSelects();renderWeaponEditor();await saveWeapons();toast('Added.');
-}
-async function removeWeapon(cat,w){WEAPONS[cat]=WEAPONS[cat].filter(x=>x!==w);rebuildSelects();renderWeaponEditor();await saveWeapons();}
-async function addCategory(){
-  const inp=document.getElementById('new-cat-inp');const val=inp.value.trim();
-  if(!val)return;if(WEAPONS[val]){toast('Already exists');return;}
-  WEAPONS[val]=[];inp.value='';rebuildSelects();renderWeaponEditor();await saveWeapons();toast('Category added.');
-}
-async function deleteCategory(cat){
-  if(!confirm(`Delete "${cat}"?`))return;delete WEAPONS[cat];rebuildSelects();renderWeaponEditor();await saveWeapons();
-}
-function toggleCat(cat){collapsedCats[cat]=!collapsedCats[cat];renderWeaponEditor();}
-async function renameCategory(cat){
-  const n=prompt('Rename:',cat);if(!n||n===cat)return;if(WEAPONS[n]){toast('Name taken');return;}
-  const e=Object.entries(WEAPONS);WEAPONS={};e.forEach(([k,v])=>{WEAPONS[k===cat?n:k]=v;});
-  rebuildSelects();renderWeaponEditor();await saveWeapons();
-}
-
-// ── Render ────────────────────────────────────────────────────────
-function renderAll(){
-  updateStats();renderSignupList();renderPublicParties();
-  if(unlocked){renderOwnerSignups();renderOwnerParties();}
-}
-
-function updateStats(){
-  document.getElementById('s-total').textContent=signups.length;
-  document.getElementById('total-badge').textContent=signups.length+' player'+(signups.length!==1?'s':'');
-}
-
-function renderSignupList(){
-  document.getElementById('signup-list').innerHTML=signups.length
-    ?signups.map((s,i)=>rowHtml(s,i,false)).join('')
-    :`<div class="empty-msg">No signups yet — be the first!</div>`;
-}
-
-function renderOwnerSignups(){
-  document.getElementById('o-signup-list').innerHTML=signups.length
-    ?signups.map((s,i)=>rowHtml(s,i,true)).join('')
-    :`<div class="empty-msg">No signups yet.</div>`;
-}
-
-function rowHtml(s,i,del){
-  return `<div class="signup-row">
-    <div class="sr-num">${i+1}</div><div class="sr-name">${s.name}</div>
-    <div class="sr-weapons"><span class="w1tag">${s.w1}</span>${s.w2?`<span class="w2tag">${s.w2}</span>`:''}</div>
-    <div class="sr-note">${s.note||''}</div>
-    ${del?`<button class="sr-del" onclick="removeSignup(${s.id})">remove</button>`:''}
-  </div>`;
-}
-
-function renderBlockedList(){
-  const el=document.getElementById('blocked-list');if(!el)return;
-  const entries=Object.entries(blocked);
-  if(!entries.length){el.innerHTML=`<div class="empty-msg" style="padding:1rem">No browsers blocked.</div>`;return;}
-  el.innerHTML=entries.map(([fp,d])=>`<div class="ban-row">
-    <div><div style="font-weight:500;color:#dde1f0">${d.name}</div><div style="font-size:11px;color:#4a5070;font-family:monospace">${fp}</div></div>
-    <span style="font-size:12px;color:#4a5070">${d.signedAt}</span>
-    <button class="btn btn-ok btn-sm" onclick="unblockFp('${fp}')">Unblock</button>
-  </div>`).join('');
-}
-
-function buildPlayerSelect(pi,si,slotWeapon,currentPlayerId){
-  const assignedIds=new Set(parties.flatMap((p,pii)=>p.slots.map((s,sii)=>{if(pii===pi&&sii===si)return null;return s.playerId;})).filter(Boolean));
-  const available=signups.filter(s=>!assignedIds.has(s.id));
-  const matching=slotWeapon?available.filter(s=>s.w1===slotWeapon||s.w2===slotWeapon):[];
-  const others=slotWeapon?available.filter(s=>s.w1!==slotWeapon&&s.w2!==slotWeapon):available;
-  let html=`<select class="mini-sel" onchange="setSlotPlayer(${pi},${si},this.value)"><option value="">— none —</option>`;
-  if(matching.length){html+=`<optgroup label="✓ Has this weapon">`;matching.forEach(s=>{const w2=s.w2?` / ${s.w2}`:'';html+=`<option value="${s.id}"${s.id===currentPlayerId?' selected':''}>⭐ ${s.name} (${s.w1}${w2})</option>`;});html+=`</optgroup>`;}
-  if(others.length){html+=`<optgroup label="${matching.length?'Other players':'All players'}">`;others.forEach(s=>{const w2=s.w2?` / ${s.w2}`:'';html+=`<option value="${s.id}"${s.id===currentPlayerId?' selected':''}>${s.name} (${s.w1}${w2})</option>`;});html+=`</optgroup>`;}
-  return html+`</select>`;
-}
-
-function renderPublicParties(){
-  document.getElementById('public-parties').innerHTML=parties.map((p,pi)=>{
-    const filled=p.slots.filter(s=>s.player).length;
-    return `<table class="party-tbl">
-      <tr><th class="th-party" colspan="3" style="border-left:4px solid ${p.accent};font-size:16px">${p.name} <span style="font-weight:400;font-size:13px;opacity:0.7">${filled}/20</span></th></tr>
-      <tr><th class="th-party" style="width:30px;opacity:0.5">#</th><th class="th-wpn">Weapon</th><th class="th-player">Player</th></tr>
-      ${p.slots.map((s,i)=>`<tr><td class="td-num">${i+1}</td><td class="td-wpn ${s.weapon?'':'empty'}">${s.weapon||'—'}</td><td class="td-player ${s.player?'':'empty'}">${s.player||'—'}</td></tr>`).join('')}
-    </table>`;
-  }).join('');
-}
-
-function renderOwnerParties(){
-  if(!unlocked)return;
-  document.getElementById('o-parties').innerHTML=parties.map((p,pi)=>{
-    const filled=p.slots.filter(s=>s.player).length;
-    return `<table class="o-party-tbl">
-      <tr><th class="th-party" colspan="4" style="border-left:4px solid ${p.accent};font-size:14px">
-        <span contenteditable="true" spellcheck="false" style="display:inline-block;min-width:50px;cursor:text;outline:none;border-radius:3px;padding:0 3px"
-          onmouseenter="this.style.background='rgba(255,255,255,0.07)'" onmouseleave="this.style.background=''"
-          onfocus="this.style.background='rgba(107,125,214,0.18)';this.style.boxShadow='0 0 0 1.5px #6b7dd6'"
-          onblur="this.style.background='';this.style.boxShadow='';setPartyName(${pi},this.textContent.trim())"
-          onclick="event.stopPropagation()">${p.name}</span>
-        <span style="font-weight:400;font-size:11px;opacity:0.7;margin-left:5px">${filled}/20</span>
-        <button class="btn btn-sm btn-danger" style="float:right;font-size:11px;padding:3px 10px" onclick="clearParty(${pi})">clear</button>
-      </th></tr>
-      <tr><th class="th-party" style="width:24px;opacity:0.5">#</th><th class="th-wpn">Weapon</th><th class="th-player">Player</th><th class="th-party" style="width:24px"></th></tr>
-      ${p.slots.map((s,si)=>`<tr>
-        <td class="td-num" style="font-size:11px">${si+1}</td>
-        <td><select class="mini-sel" onchange="setSlotWeapon(${pi},${si},this.value)">
-          <option value="">— empty —</option>
-          ${Object.entries(WEAPONS).map(([cat,weps])=>`<optgroup label="${cat}">${weps.map(w=>`<option value="${w}"${w===s.weapon?' selected':''}>${w}</option>`).join('')}</optgroup>`).join('')}
-        </select></td>
-        <td>${buildPlayerSelect(pi,si,s.weapon,s.playerId)}</td>
-        <td><button class="icon-btn" onclick="clearSlot(${pi},${si})">✕</button></td>
-      </tr>`).join('')}
-    </table>`;
-  }).join('');
-}
-
-function renderDefaultParties(){
-  const el=document.getElementById('default-parties');
-  el.innerHTML=defaultTemplate.map((p,pi)=>{
-    const set=p.slots.filter(s=>s.weapon).length;
-    return `<table class="o-party-tbl">
-      <tr><th class="th-party" colspan="3" style="border-left:4px solid ${parties[pi]?.accent||'#534AB7'};font-size:14px">
-        <span contenteditable="true" spellcheck="false" style="display:inline-block;min-width:50px;cursor:text;outline:none;border-radius:3px;padding:0 3px"
-          onmouseenter="this.style.background='rgba(255,255,255,0.07)'" onmouseleave="this.style.background=''"
-          onfocus="this.style.background='rgba(107,125,214,0.18)';this.style.boxShadow='0 0 0 1.5px #6b7dd6'"
-          onblur="this.style.background='';this.style.boxShadow='';setDefaultPartyName(${pi},this.textContent.trim())"
-          onclick="event.stopPropagation()">${p.name}</span>
-        <span style="font-weight:400;font-size:11px;opacity:0.7;margin-left:5px">${set}/20 set</span>
-        <span class="default-tag">template</span>
-      </th></tr>
-      <tr><th class="th-party" style="width:24px;opacity:0.5">#</th><th class="th-wpn">Default weapon</th><th class="th-party" style="width:10px"></th></tr>
-      ${p.slots.map((s,si)=>`<tr>
-        <td class="td-num" style="font-size:11px">${si+1}</td>
-        <td><select class="mini-sel" onchange="setDefaultWeapon(${pi},${si},this.value)">
-          <option value="">— empty slot —</option>
-          ${Object.entries(WEAPONS).map(([cat,weps])=>`<optgroup label="${cat}">${weps.map(w=>`<option value="${w}"${w===s.weapon?' selected':''}>${w}</option>`).join('')}</optgroup>`).join('')}
-        </select></td>
-        <td><button class="icon-btn" onclick="setDefaultWeapon(${pi},${si},'')">✕</button></td>
-      </tr>`).join('')}
-    </table>`;
-  }).join('');
-}
-
-function renderHistory(){
-  const el=document.getElementById('history-list');
-  if(!history.length){el.innerHTML=`<div class="empty-msg">No past events yet.</div>`;return;}
-  el.innerHTML=history.map((ev,i)=>`<div class="hist-row">
-    <div><div class="hist-name">${ev.name}</div><div class="hist-meta">${ev.date?ev.date+' · ':''}Saved ${ev.savedAt} · ${ev.signups.length} players</div></div>
-    <span class="hist-badge">${ev.parties.reduce((a,p)=>a+p.slots.filter(s=>s.playerId).length,0)}/40 assigned</span>
-    <button class="btn btn-ok btn-sm" onclick="exportHistoryItem(${i})">Export</button>
-    <button class="btn btn-danger btn-sm" onclick="deleteHistoryItem(${i})">Delete</button>
-  </div>`).join('');
-}
-
-function renderWeaponEditor(){
-  document.getElementById('weapon-editor').innerHTML=Object.entries(WEAPONS).map(([cat,weps])=>{
-    const collapsed=collapsedCats[cat];const sid='winp-'+cat.replace(/[^a-zA-Z0-9]/g,'_');
-    return `<div class="cat-block">
-      <div class="cat-hdr" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')">
-        <div class="cat-hdr-left"><span style="font-size:14px;font-weight:500;color:#dde1f0">${cat}</span><span style="font-size:12px;color:#7a82a0">${weps.length}</span></div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <button class="btn btn-sm" onclick="event.stopPropagation();renameCategory('${cat.replace(/'/g,"\\'")}')">rename</button>
-          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCategory('${cat.replace(/'/g,"\\'")}')">delete</button>
-          <span class="chevron ${collapsed?'':'open'}">▼</span>
-        </div>
-      </div>
-      ${collapsed?'':`<div class="cat-body">
-        <div class="weapon-tags">${weps.map(w=>`<span class="wtag">${w}<button class="wtag-del" onclick="removeWeapon('${cat.replace(/'/g,"\\'")}','${w.replace(/'/g,"\\'")}')">×</button></span>`).join('')}${!weps.length?`<span style="font-size:13px;color:#4a5070;font-style:italic">No weapons yet</span>`:''}</div>
-        <div class="add-weapon-row"><input id="${sid}" placeholder="Add weapon..." onkeydown="if(event.key==='Enter')addWeapon('${cat.replace(/'/g,"\\'")}')"><button class="btn btn-accent btn-sm" onclick="addWeapon('${cat.replace(/'/g,"\\'")}')">+ Add</button></div>
-      </div>`}
+function renderManageEvents(){
+  const el=document.getElementById('manage-events-list');
+  el.innerHTML=eventList.map((e,i)=>{const count=(eventData[e.id]?.signups||[]).length;const color=ACCENT_COLORS[i%ACCENT_COLORS.length];
+    return `<div class="signup-row" style="margin-bottom:8px;border-left:3px solid ${color}">
+      <div style="flex:1"><div style="font-size:15px;font-weight:500;color:#dde1f0">${e.name}</div><div style="font-size:12px;color:#4a5070">${count} signups</div></div>
+      <button class="btn btn-sm" onclick="selectEvent('${e.id}');ownerNav('event')">Edit</button>
+      <button class="btn btn-sm" onclick="renameEvent('${e.id}')">Rename</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteEvent('${e.id}')">Delete</button>
     </div>`;
   }).join('');
 }
 
-function toast(msg){
-  const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
-  setTimeout(()=>{t.style.display='none';},2800);
+// ── Auth ──────────────────────────────────────────────────────────
+function unlock(){
+  if(document.getElementById('pw-inp').value!==OWNER_PASSWORD){toast('Wrong password');return;}
+  unlocked=true;document.getElementById('lock-screen').style.display='none';document.getElementById('owner-content').style.display='block';document.getElementById('pw-inp').value='';
+  syncOwnerInputs();const ev=getActiveEvent();const label=ev?.meta?.name||eventList.find(e=>e.id===activeEventId)?.name||'';document.getElementById('owner-event-label').textContent=label;
+  updateSignupUI();renderAll();renderEventSwitcher();
 }
+function lockOwner(){unlocked=false;document.getElementById('lock-screen').style.display='block';document.getElementById('owner-content').style.display='none';ownerVisible=false;document.getElementById('owner-tab').style.display='none';updateSignupUI();nav('signup');renderEventSwitcher();}
+
+// ── Render ────────────────────────────────────────────────────────
+function renderAll(){const ev=getActiveEvent();if(!ev)return;updateStats();renderSignupList();renderPublicParties();if(unlocked){renderOwnerSignups();renderOwnerParties();}}
+function updateStats(){const ev=getActiveEvent();const c=ev?ev.signups.length:0;document.getElementById('s-total').textContent=c;document.getElementById('total-badge').textContent=c+' player'+(c!==1?'s':'');}
+function renderSignupList(){const ev=getActiveEvent();document.getElementById('signup-list').innerHTML=ev&&ev.signups.length?ev.signups.map((s,i)=>rowHtml(s,i,false)).join(''):`<div class="empty-msg">No signups yet — be the first!</div>`;}
+function renderOwnerSignups(){const ev=getActiveEvent();document.getElementById('o-signup-list').innerHTML=ev&&ev.signups.length?ev.signups.map((s,i)=>rowHtml(s,i,true)).join(''):`<div class="empty-msg">No signups yet.</div>`;}
+function rowHtml(s,i,del){return `<div class="signup-row"><div class="sr-num">${i+1}</div><div class="sr-name">${s.name}</div><div class="sr-weapons"><span class="w1tag">${s.w1}</span>${s.w2?`<span class="w2tag">${s.w2}</span>`:''}</div><div class="sr-note">${s.note||''}</div>${del?`<button class="sr-del" onclick="removeSignup(${s.id})">remove</button>`:''}</div>`;}
+function renderBlockedList(){const el=document.getElementById('blocked-list');if(!el)return;const ev=getActiveEvent();const entries=Object.entries(ev?.blocked||{});if(!entries.length){el.innerHTML=`<div class="empty-msg" style="padding:1rem">No browsers blocked.</div>`;return;}el.innerHTML=entries.map(([fp,d])=>`<div class="ban-row"><div><div style="font-weight:500;color:#dde1f0">${d.name}</div><div style="font-size:11px;color:#4a5070;font-family:monospace">${fp}</div></div><span style="font-size:12px;color:#4a5070">${d.signedAt}</span><button class="btn btn-ok btn-sm" onclick="unblockFp('${fp}')">Unblock</button></div>`).join('');}
+
+function buildPlayerSelect(pi,si,slotWeapon,cid){
+  const ev=getActiveEvent();if(!ev)return '<select class="mini-sel"></select>';
+  const aids=new Set(ev.parties.flatMap((p,pii)=>p.slots.map((s,sii)=>{if(pii===pi&&sii===si)return null;return s.playerId;})).filter(Boolean));
+  const avail=ev.signups.filter(s=>!aids.has(s.id));
+  const match=slotWeapon?avail.filter(s=>s.w1===slotWeapon||s.w2===slotWeapon):[];
+  const other=slotWeapon?avail.filter(s=>s.w1!==slotWeapon&&s.w2!==slotWeapon):avail;
+  let h=`<select class="mini-sel" onchange="setSlotPlayer(${pi},${si},this.value)"><option value="">— none —</option>`;
+  if(match.length){h+=`<optgroup label="✓ Has this weapon">`;match.forEach(s=>{const w2=s.w2?` / ${s.w2}`:'';h+=`<option value="${s.id}"${s.id===cid?' selected':''}>⭐ ${s.name} (${s.w1}${w2})</option>`;});h+=`</optgroup>`;}
+  if(other.length){h+=`<optgroup label="${match.length?'Other players':'All players'}">`;other.forEach(s=>{const w2=s.w2?` / ${s.w2}`:'';h+=`<option value="${s.id}"${s.id===cid?' selected':''}>${s.name} (${s.w1}${w2})</option>`;});h+=`</optgroup>`;}
+  return h+`</select>`;
+}
+
+function renderPublicParties(){
+  const ev=getActiveEvent();if(!ev)return;
+  document.getElementById('public-parties').innerHTML=ev.parties.map((p,pi)=>{const filled=p.slots.filter(s=>s.player).length;
+    return `<table class="party-tbl"><tr><th class="th-party" colspan="3" style="border-left:4px solid ${p.accent};font-size:16px">${p.name} <span style="font-weight:400;font-size:13px;opacity:0.7">${filled}/20</span></th></tr><tr><th class="th-party" style="width:30px;opacity:0.5">#</th><th class="th-wpn">Weapon</th><th class="th-player">Player</th></tr>${p.slots.map((s,i)=>`<tr><td class="td-num">${i+1}</td><td class="td-wpn ${s.weapon?'':'empty'}">${s.weapon||'—'}</td><td class="td-player ${s.player?'':'empty'}">${s.player||'—'}</td></tr>`).join('')}</table>`;
+  }).join('');
+}
+
+function renderOwnerParties(){
+  if(!unlocked)return;const ev=getActiveEvent();if(!ev)return;
+  document.getElementById('o-parties').innerHTML=ev.parties.map((p,pi)=>{const filled=p.slots.filter(s=>s.player).length;
+    return `<table class="o-party-tbl"><tr><th class="th-party" colspan="4" style="border-left:4px solid ${p.accent};font-size:14px"><span contenteditable="true" spellcheck="false" style="display:inline-block;min-width:50px;cursor:text;outline:none;border-radius:3px;padding:0 3px" onmouseenter="this.style.background='rgba(255,255,255,0.07)'" onmouseleave="this.style.background=''" onfocus="this.style.background='rgba(107,125,214,0.18)';this.style.boxShadow='0 0 0 1.5px #6b7dd6'" onblur="this.style.background='';this.style.boxShadow='';setPartyName(${pi},this.textContent.trim())" onclick="event.stopPropagation()">${p.name}</span><span style="font-weight:400;font-size:11px;opacity:0.7;margin-left:5px">${filled}/20</span><button class="btn btn-sm btn-danger" style="float:right;font-size:11px;padding:3px 10px" onclick="clearParty(${pi})">clear</button></th></tr><tr><th class="th-party" style="width:24px;opacity:0.5">#</th><th class="th-wpn">Weapon</th><th class="th-player">Player</th><th class="th-party" style="width:24px"></th></tr>${p.slots.map((s,si)=>`<tr><td class="td-num" style="font-size:11px">${si+1}</td><td><select class="mini-sel" onchange="setSlotWeapon(${pi},${si},this.value)"><option value="">— empty —</option>${Object.entries(WEAPONS).map(([cat,weps])=>`<optgroup label="${cat}">${weps.map(w=>`<option value="${w}"${w===s.weapon?' selected':''}>${w}</option>`).join('')}</optgroup>`).join('')}</select></td><td>${buildPlayerSelect(pi,si,s.weapon,s.playerId)}</td><td><button class="icon-btn" onclick="clearSlot(${pi},${si})">✕</button></td></tr>`).join('')}</table>`;
+  }).join('');
+}
+
+function renderDefaultParties(){
+  const ev=getActiveEvent();if(!ev)return;
+  document.getElementById('default-parties').innerHTML=ev.defaultTemplate.map((p,pi)=>{const set=p.slots.filter(s=>s.weapon).length;
+    return `<table class="o-party-tbl"><tr><th class="th-party" colspan="3" style="border-left:4px solid ${ev.parties[pi]?.accent||'#534AB7'};font-size:14px"><span contenteditable="true" spellcheck="false" style="display:inline-block;min-width:50px;cursor:text;outline:none;border-radius:3px;padding:0 3px" onmouseenter="this.style.background='rgba(255,255,255,0.07)'" onmouseleave="this.style.background=''" onfocus="this.style.background='rgba(107,125,214,0.18)';this.style.boxShadow='0 0 0 1.5px #6b7dd6'" onblur="this.style.background='';this.style.boxShadow='';setDefaultPartyName(${pi},this.textContent.trim())" onclick="event.stopPropagation()">${p.name}</span><span style="font-weight:400;font-size:11px;opacity:0.7;margin-left:5px">${set}/20 set</span><span class="default-tag">template</span></th></tr><tr><th class="th-party" style="width:24px;opacity:0.5">#</th><th class="th-wpn">Default weapon</th><th style="width:24px"></th></tr>${p.slots.map((s,si)=>`<tr><td class="td-num" style="font-size:11px">${si+1}</td><td><select class="mini-sel" onchange="setDefaultWeapon(${pi},${si},this.value)"><option value="">— empty slot —</option>${Object.entries(WEAPONS).map(([cat,weps])=>`<optgroup label="${cat}">${weps.map(w=>`<option value="${w}"${w===s.weapon?' selected':''}>${w}</option>`).join('')}</optgroup>`).join('')}</select></td><td><button class="icon-btn" onclick="setDefaultWeapon(${pi},${si},'')">✕</button></td></tr>`).join('')}</table>`;
+  }).join('');
+}
+
+function renderHistory(){const el=document.getElementById('history-list');if(!history.length){el.innerHTML=`<div class="empty-msg">No past events yet.</div>`;return;}el.innerHTML=history.map((ev,i)=>`<div class="hist-row"><div><div class="hist-name">${ev.name}</div><div class="hist-meta">${ev.date?ev.date+' · ':''}Saved ${ev.savedAt} · ${ev.signups.length} players</div></div><span class="hist-badge">${ev.parties.reduce((a,p)=>a+p.slots.filter(s=>s.playerId).length,0)}/40 assigned</span><button class="btn btn-ok btn-sm" onclick="exportHistoryItem(${i})">Export</button><button class="btn btn-danger btn-sm" onclick="deleteHistoryItem(${i})">Delete</button></div>`).join('');}
+
+async function addWeapon(cat){const inp=document.getElementById('winp-'+cat.replace(/[^a-zA-Z0-9]/g,'_'));const val=inp.value.trim();if(!val)return;if(WEAPONS[cat].includes(val)){toast('Already in list');return;}WEAPONS[cat].push(val);inp.value='';rebuildSelects();renderWeaponEditor();await saveWeapons();toast('Added.');}
+async function removeWeapon(cat,w){WEAPONS[cat]=WEAPONS[cat].filter(x=>x!==w);rebuildSelects();renderWeaponEditor();await saveWeapons();}
+async function addCategory(){const inp=document.getElementById('new-cat-inp');const val=inp.value.trim();if(!val)return;if(WEAPONS[val]){toast('Already exists');return;}WEAPONS[val]=[];inp.value='';rebuildSelects();renderWeaponEditor();await saveWeapons();toast('Added.');}
+async function deleteCategory(cat){if(!confirm(`Delete "${cat}"?`))return;delete WEAPONS[cat];rebuildSelects();renderWeaponEditor();await saveWeapons();}
+function toggleCat(cat){collapsedCats[cat]=!collapsedCats[cat];renderWeaponEditor();}
+async function renameCategory(cat){const n=prompt('Rename:',cat);if(!n||n===cat)return;if(WEAPONS[n]){toast('Name taken');return;}const e=Object.entries(WEAPONS);WEAPONS={};e.forEach(([k,v])=>{WEAPONS[k===cat?n:k]=v;});rebuildSelects();renderWeaponEditor();await saveWeapons();}
+function renderWeaponEditor(){document.getElementById('weapon-editor').innerHTML=Object.entries(WEAPONS).map(([cat,weps])=>{const collapsed=collapsedCats[cat];const sid='winp-'+cat.replace(/[^a-zA-Z0-9]/g,'_');return `<div class="cat-block"><div class="cat-hdr" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')"><div class="cat-hdr-left"><span style="font-size:14px;font-weight:500;color:#dde1f0">${cat}</span><span style="font-size:12px;color:#7a82a0">${weps.length}</span></div><div style="display:flex;align-items:center;gap:8px"><button class="btn btn-sm" onclick="event.stopPropagation();renameCategory('${cat.replace(/'/g,"\\'")}')">rename</button><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCategory('${cat.replace(/'/g,"\\'")}')">delete</button><span class="chevron ${collapsed?'':'open'}">▼</span></div></div>${collapsed?'':`<div class="cat-body"><div class="weapon-tags">${weps.map(w=>`<span class="wtag">${w}<button class="wtag-del" onclick="removeWeapon('${cat.replace(/'/g,"\\'")}','${w.replace(/'/g,"\\'")}')">×</button></span>`).join('')}${!weps.length?`<span style="font-size:13px;color:#4a5070;font-style:italic">No weapons yet</span>`:''}</div><div class="add-weapon-row"><input id="${sid}" placeholder="Add weapon..." onkeydown="if(event.key==='Enter')addWeapon('${cat.replace(/'/g,"\\'")}')"><button class="btn btn-accent btn-sm" onclick="addWeapon('${cat.replace(/'/g,"\\'")}')">+ Add</button></div></div>`}</div>`;}).join('');}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
 init();
 </script>
