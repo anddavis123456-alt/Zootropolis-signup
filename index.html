@@ -142,22 +142,6 @@ select optgroup{background:#1e2130;color:#7a82a0}
 .owner-mode .e:focus{background:rgba(107,125,214,0.2);box-shadow:0 0 0 1.5px #6b7dd6;outline:none}
 .edit-hint{position:fixed;bottom:68px;right:24px;background:#252a3d;border:0.5px solid #534AB7;color:#9990c0;font-size:12px;padding:6px 12px;border-radius:8px;z-index:998;display:none;pointer-events:none}
 .owner-mode .edit-hint{display:block}
-.builds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.2rem}
-.build-card{background:#252a3d;border:0.5px solid #3a3f58;border-radius:14px;overflow:hidden}
-.build-card img{width:100%;display:block;aspect-ratio:16/9;object-fit:cover;background:#1e2130}
-.build-card-body{padding:12px 14px}
-.build-card-title{font-size:15px;font-weight:500;color:#dde1f0;margin-bottom:4px}
-.build-card-desc{font-size:13px;color:#7a82a0}
-.build-card-actions{display:flex;gap:8px;margin-top:10px}
-.upload-area{background:#1e2130;border:1.5px dashed #3a3f58;border-radius:12px;padding:2.5rem;text-align:center;cursor:pointer;transition:all 0.15s;margin-bottom:1.2rem}
-.upload-area:hover{border-color:#534AB7;background:#252a3d}
-.upload-area.drag{border-color:#534AB7;background:#2a2f44}
-.upload-icon{font-size:32px;margin-bottom:8px;color:#4a5070}
-.upload-text{font-size:14px;color:#7a82a0}
-.upload-subtext{font-size:12px;color:#4a5070;margin-top:4px}
-.upload-progress{background:#1e2130;border:0.5px solid #3a3f58;border-radius:8px;padding:12px 16px;margin-bottom:8px;display:none}
-.progress-bar-wrap{background:#3a3f58;border-radius:4px;height:6px;margin-top:8px;overflow:hidden}
-.progress-bar{height:100%;background:#534AB7;border-radius:4px;transition:width 0.2s;width:0%}
 @media(max-width:750px){.parties-wrap,.o-parties-wrap{grid-template-columns:1fr}.row2{grid-template-columns:1fr}.event-switcher{flex-direction:column}}
 </style>
 </head>
@@ -190,7 +174,6 @@ select optgroup{background:#1e2130;color:#7a82a0}
   <div class="tabs">
     <div class="tab active" onclick="nav('signup')" id="tab-signup"><span class="e" spellcheck="false" onclick="event.stopPropagation()">Sign up</span></div>
     <div class="tab" onclick="nav('parties')" id="tab-parties"><span class="e" spellcheck="false" onclick="event.stopPropagation()">Parties</span></div>
-    <div class="tab" onclick="nav('builds')" id="tab-builds"><span class="e" spellcheck="false" onclick="event.stopPropagation()">Builds</span></div>
     <div class="tab" id="owner-tab" style="display:none" onclick="nav('owner')">&#9881;</div>
   </div>
 
@@ -224,11 +207,6 @@ select optgroup{background:#1e2130;color:#7a82a0}
     <div class="parties-wrap" id="public-parties"></div>
   </div>
 
-  <div id="v-builds" class="view">
-    <div class="e" id="lbl-builds-desc" spellcheck="false" style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Approved builds for this event. Click an image to view full size.</div>
-    <div id="builds-grid-public" class="builds-grid"><div class="loading">Loading builds...</div></div>
-  </div>
-
   <div id="v-owner" class="view">
     <div class="lock-box" id="lock-screen">
       <h2>Owner access</h2>
@@ -248,7 +226,6 @@ select optgroup{background:#1e2130;color:#7a82a0}
         <div class="owner-tab active" onclick="ownerNav('event')">Event settings</div>
         <div class="owner-tab" onclick="ownerNav('parties')">Parties</div>
         <div class="owner-tab" onclick="ownerNav('default')">Default party</div>
-        <div class="owner-tab" onclick="ownerNav('builds')">Builds</div>
         <div class="owner-tab" onclick="ownerNav('signups')">Signups</div>
         <div class="owner-tab" onclick="ownerNav('history')">History</div>
         <div class="owner-tab" onclick="ownerNav('weapons')">Weapon list</div>
@@ -289,21 +266,6 @@ select optgroup{background:#1e2130;color:#7a82a0}
           <button class="btn btn-danger btn-sm" onclick="clearDefault()">Clear default</button>
         </div>
         <div class="o-parties-wrap" id="default-parties"></div>
-      </div>
-
-      <div id="ov-builds" class="owner-view">
-        <div style="font-size:14px;color:#7a82a0;margin-bottom:1.2rem">Upload build screenshots. Images are stored in Supabase Storage and visible to all players on the Builds tab.</div>
-        <div class="upload-area" id="upload-area" onclick="document.getElementById('build-file-input').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleBuildDrop(event)">
-          <div class="upload-icon">🖼</div>
-          <div class="upload-text">Click to upload or drag &amp; drop an image</div>
-          <div class="upload-subtext">PNG, JPG, WEBP — max 5MB per image</div>
-          <input type="file" id="build-file-input" accept="image/*" style="display:none" onchange="handleBuildUpload(this.files[0])">
-        </div>
-        <div class="upload-progress" id="upload-progress">
-          <div style="font-size:13px;color:#dde1f0" id="upload-progress-text">Uploading...</div>
-          <div class="progress-bar-wrap"><div class="progress-bar" id="progress-bar"></div></div>
-        </div>
-        <div id="builds-grid-owner" class="builds-grid"></div>
       </div>
 
       <div id="ov-signups" class="owner-view">
@@ -548,7 +510,7 @@ function nav(v){document.querySelectorAll('.view').forEach(e=>e.classList.remove
 function ownerNav(v){
   document.querySelectorAll('.owner-view').forEach(e=>e.classList.remove('on'));document.querySelectorAll('.owner-tab').forEach(e=>e.classList.remove('active'));
   document.getElementById('ov-'+v).classList.add('on');document.querySelectorAll('.owner-tab').forEach(t=>{if(t.getAttribute('onclick')&&t.getAttribute('onclick').includes("'"+v+"'"))t.classList.add('active');});
-  if(v==='weapons')renderWeaponEditor();if(v==='history')renderHistory();if(v==='default')renderDefaultParties();if(v==='signups'){renderOwnerSignups();renderBlockedList();}if(v==='manage-events')renderManageEvents();if(v==='builds')renderOwnerBuilds();
+  if(v==='weapons')renderWeaponEditor();if(v==='history')renderHistory();if(v==='default')renderDefaultParties();if(v==='signups'){renderOwnerSignups();renderBlockedList();}if(v==='manage-events')renderManageEvents();
 }
 
 // ── Signup ────────────────────────────────────────────────────────
@@ -672,7 +634,7 @@ function unlock(){
 function lockOwner(){unlocked=false;document.getElementById('lock-screen').style.display='block';document.getElementById('owner-content').style.display='none';ownerVisible=false;document.getElementById('owner-tab').style.display='none';setEditable(false);updateSignupUI();nav('signup');renderEventSwitcher();}
 
 // ── Render ────────────────────────────────────────────────────────
-function renderAll(){const ev=getActiveEvent();if(!ev)return;updateStats();renderSignupList();renderPublicParties();renderPublicBuilds();if(unlocked){renderOwnerSignups();renderOwnerParties();}}
+function renderAll(){const ev=getActiveEvent();if(!ev)return;updateStats();renderSignupList();renderPublicParties();if(unlocked){renderOwnerSignups();renderOwnerParties();}}
 function updateStats(){const ev=getActiveEvent();const c=ev?ev.signups.length:0;document.getElementById('s-total').textContent=c;document.getElementById('total-badge').textContent=c+' player'+(c!==1?'s':'');}
 function renderSignupList(){const ev=getActiveEvent();document.getElementById('signup-list').innerHTML=ev&&ev.signups.length?ev.signups.map((s,i)=>rowHtml(s,i,false)).join(''):`<div class="empty-msg">No signups yet — be the first!</div>`;}
 function renderOwnerSignups(){const ev=getActiveEvent();document.getElementById('o-signup-list').innerHTML=ev&&ev.signups.length?ev.signups.map((s,i)=>rowHtml(s,i,true)).join(''):`<div class="empty-msg">No signups yet.</div>`;}
@@ -721,80 +683,6 @@ async function deleteCategory(cat){if(!confirm(`Delete "${cat}"?`))return;delete
 function toggleCat(cat){collapsedCats[cat]=!collapsedCats[cat];renderWeaponEditor();}
 async function renameCategory(cat){const n=prompt('Rename:',cat);if(!n||n===cat)return;if(WEAPONS[n]){toast('Name taken');return;}const e=Object.entries(WEAPONS);WEAPONS={};e.forEach(([k,v])=>{WEAPONS[k===cat?n:k]=v;});rebuildSelects();renderWeaponEditor();await saveWeapons();}
 function renderWeaponEditor(){document.getElementById('weapon-editor').innerHTML=Object.entries(WEAPONS).map(([cat,weps])=>{const collapsed=collapsedCats[cat];const sid='winp-'+cat.replace(/[^a-zA-Z0-9]/g,'_');return `<div class="cat-block"><div class="cat-hdr" onclick="toggleCat('${cat.replace(/'/g,"\\'")}')"><div class="cat-hdr-left"><span style="font-size:14px;font-weight:500;color:#dde1f0">${cat}</span><span style="font-size:12px;color:#7a82a0">${weps.length}</span></div><div style="display:flex;align-items:center;gap:8px"><button class="btn btn-sm" onclick="event.stopPropagation();renameCategory('${cat.replace(/'/g,"\\'")}')">rename</button><button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteCategory('${cat.replace(/'/g,"\\'")}')">delete</button><span class="chevron ${collapsed?'':'open'}">▼</span></div></div>${collapsed?'':`<div class="cat-body"><div class="weapon-tags">${weps.map(w=>`<span class="wtag">${w}<button class="wtag-del" onclick="removeWeapon('${cat.replace(/'/g,"\\'")}','${w.replace(/'/g,"\\'")}')">×</button></span>`).join('')}${!weps.length?`<span style="font-size:13px;color:#4a5070;font-style:italic">No weapons yet</span>`:''}</div><div class="add-weapon-row"><input id="${sid}" placeholder="Add weapon..." onkeydown="if(event.key==='Enter')addWeapon('${cat.replace(/'/g,"\\'")}')"><button class="btn btn-accent btn-sm" onclick="addWeapon('${cat.replace(/'/g,"\\'")}')">+ Add</button></div></div>`}</div>`;}).join('');}
-
-// ── Builds ────────────────────────────────────────────────────────
-async function handleBuildDrop(e){
-  e.preventDefault();document.getElementById('upload-area').classList.remove('drag');
-  const file=e.dataTransfer.files[0];if(file&&file.type.startsWith('image/'))await handleBuildUpload(file);
-}
-
-async function handleBuildUpload(file){
-  if(!file)return;
-  if(file.size>5*1024*1024){toast('Image too large — max 5MB.');return;}
-  const title=prompt('Build title (e.g. "Hallowfall Healer"):','');
-  if(title===null)return;
-
-  const prog=document.getElementById('upload-progress');
-  const bar=document.getElementById('progress-bar');
-  const txt=document.getElementById('upload-progress-text');
-  prog.style.display='block';bar.style.width='10%';txt.textContent='Uploading image...';
-
-  try{
-    const ext=file.name.split('.').pop();
-    const path=`builds/${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-    const{error:upErr}=await db.storage.from('albion-builds').upload(path,file,{contentType:file.type});
-    if(upErr)throw upErr;
-    bar.style.width='70%';txt.textContent='Saving build info...';
-    const{data:urlData}=db.storage.from('albion-builds').getPublicUrl(path);
-    const ev=getActiveEvent();if(!ev)return;
-    if(!ev.builds)ev.builds=[];
-    ev.builds.push({id:Date.now(),title:title||'Untitled build',url:urlData.publicUrl,path,uploadedAt:new Date().toLocaleDateString('en-GB')});
-    bar.style.width='90%';
-    await saveActiveEvent();
-    bar.style.width='100%';txt.textContent='Done!';
-    setTimeout(()=>{prog.style.display='none';bar.style.width='0%';},1200);
-    renderOwnerBuilds();renderPublicBuilds();
-    toast(`"${title||'Build'}" uploaded!`);
-  }catch(err){
-    prog.style.display='none';bar.style.width='0%';
-    console.error(err);
-    toast('Upload failed. Check that the storage bucket exists (see setup.sql).');
-  }
-}
-
-async function deleteBuild(buildId){
-  if(!confirm('Delete this build image?'))return;
-  const ev=getActiveEvent();if(!ev||!ev.builds)return;
-  const build=ev.builds.find(b=>b.id===buildId);
-  if(build?.path){
-    await db.storage.from('albion-builds').remove([build.path]);
-  }
-  ev.builds=ev.builds.filter(b=>b.id!==buildId);
-  await saveActiveEvent();renderOwnerBuilds();renderPublicBuilds();toast('Build deleted.');
-}
-
-function buildCardHtml(b,ownerMode){
-  return `<div class="build-card">
-    <a href="${b.url}" target="_blank" rel="noopener"><img src="${b.url}" alt="${b.title}" loading="lazy" onerror="this.style.background='#1e2130';this.style.height='140px'"></a>
-    <div class="build-card-body">
-      <div class="build-card-title">${b.title}</div>
-      <div class="build-card-desc">${b.uploadedAt||''}</div>
-      ${ownerMode?`<div class="build-card-actions"><button class="btn btn-danger btn-sm" onclick="deleteBuild(${b.id})">Delete</button></div>`:''}
-    </div>
-  </div>`;
-}
-
-function renderPublicBuilds(){
-  const el=document.getElementById('builds-grid-public');if(!el)return;
-  const ev=getActiveEvent();const builds=ev?.builds||[];
-  el.innerHTML=builds.length?builds.map(b=>buildCardHtml(b,false)).join(''):`<div class="empty-msg">No builds posted yet.</div>`;
-}
-
-function renderOwnerBuilds(){
-  const el=document.getElementById('builds-grid-owner');if(!el)return;
-  const ev=getActiveEvent();const builds=ev?.builds||[];
-  el.innerHTML=builds.length?builds.map(b=>buildCardHtml(b,true)).join(''):`<div class="empty-msg" style="padding:1.5rem">No builds uploaded yet.</div>`;
-}
 
 function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);}
 
